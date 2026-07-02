@@ -50,6 +50,7 @@ model User {
   emailVerified     DateTime?
   image             String?
   clearOnCheck      Boolean               @default(false)
+  themeColor        String                @default("pink")
   accounts          Account[]
   sessions          Session[]
   stores            Store[]
@@ -58,14 +59,16 @@ model User {
 }
 
 model Store {
-  id      String @id @default(cuid())
-  userId  String
-  name    String
-  address String
-  placeId String
-  lat     Float
-  lng     Float
-  user    User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id                String             @id @default(cuid())
+  userId            String
+  name              String
+  address           String
+  placeId           String
+  lat               Float
+  lng               Float
+  website           String?
+  user              User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  shoppingListItems ShoppingListItem[]
 
   @@unique([userId, placeId])
 }
@@ -73,10 +76,23 @@ model Store {
 model ShoppingListItem {
   id        String   @id @default(cuid())
   userId    String
-  text      String
+  productId String
+  storeId   String?
   checked   Boolean  @default(false)
   createdAt DateTime @default(now())
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  store     Store?   @relation(fields: [storeId], references: [id], onDelete: SetNull)
+
+  @@index([userId, productId, storeId])
+}
+
+model Product {
+  id                String             @id @default(cuid())
+  name              String
+  shoppingListItems ShoppingListItem[]
+
+  @@index([name])
 }
 
 model FavoriteGroceryItem {

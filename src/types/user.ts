@@ -1,3 +1,5 @@
+import { type ThemeColor } from "~/types/theme";
+
 export type Store = {
   id: string;
   name: string;
@@ -5,12 +7,18 @@ export type Store = {
   placeId: string;
   lat: number;
   lng: number;
+  website: string | null;
+};
+
+export type Product = {
+  id: string;
+  name: string;
 };
 
 export type ShoppingListItem = {
   id: string;
-  text: string;
   checked: boolean;
+  product: Product;
 };
 
 export type FavoriteGroceryItem = {
@@ -24,6 +32,7 @@ export type UserProfile = {
   email: string | null;
   image: string | null;
   clearOnCheck: boolean;
+  themeColor: ThemeColor;
   stores: Store[];
   shoppingList: ShoppingListItem[];
   favoriteItems: FavoriteGroceryItem[];

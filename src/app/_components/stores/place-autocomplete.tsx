@@ -31,7 +31,13 @@ export function PlaceAutocomplete({
 
       autocomplete = new google.maps.places.Autocomplete(inputRef.current, {
         types: ["establishment"],
-        fields: ["place_id", "name", "formatted_address", "geometry"],
+        fields: [
+          "place_id",
+          "name",
+          "formatted_address",
+          "geometry",
+          "website",
+        ],
       });
 
       listener = autocomplete.addListener("place_changed", () => {
@@ -44,6 +50,7 @@ export function PlaceAutocomplete({
           placeId: place.place_id,
           lat: place.geometry.location.lat(),
           lng: place.geometry.location.lng(),
+          website: place.website ?? null,
         });
 
         if (inputRef.current) {
@@ -58,21 +65,21 @@ export function PlaceAutocomplete({
   }, [apiKey]);
 
   return (
-    <div className="list-item-enter flex flex-col gap-2 rounded-xl border border-emerald-200 bg-white p-3 shadow-sm">
+    <div className="app-card list-item-enter flex flex-col gap-2 p-4">
       <input
         ref={inputRef}
         type="text"
         placeholder="Search for a store..."
-        className="w-full rounded-lg border border-emerald-300 bg-white px-3 py-2 text-emerald-950 placeholder:text-emerald-400 outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-200"
+        className="app-input px-3 py-2.5"
         autoFocus
       />
-      <p className="text-xs text-emerald-500">
+      <p className="text-xs text-stone-500">
         Start typing to search Google Maps for grocery stores and shops.
       </p>
       <button
         type="button"
         onClick={onCancel}
-        className="self-end text-sm text-emerald-500 hover:text-emerald-700"
+        className="self-end text-sm text-stone-500 transition hover:text-stone-700"
       >
         Cancel
       </button>

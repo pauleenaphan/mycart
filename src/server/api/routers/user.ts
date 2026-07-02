@@ -5,7 +5,11 @@ import {
   createTRPCRouter,
   protectedProcedure,
 } from "~/server/api/trpc";
+import { lookupGroceryPrices } from "~/server/gemini/lookup-grocery-prices";
+import { findProductByExactName, searchProductsByName } from "~/server/products/find-product-by-name";
 import { type db } from "~/server/db";
+import { type GroceryPriceLookupResult } from "~/types/grocery";
+import { isThemeColor, THEME_COLORS } from "~/types/theme";
 import { type UserProfile } from "~/types/user";
 
 const storeInput = z.object({
@@ -14,6 +18,7 @@ const storeInput = z.object({
   placeId: z.string().min(1),
   lat: z.number(),
   lng: z.number(),
+  website: z.string().url().nullable().optional(),
 });
 
 async function getUserProfile(
@@ -24,7 +29,10 @@ async function getUserProfile(
     where: { id: userId },
     include: {
       stores: { orderBy: { name: "asc" } },
-      shoppingListItems: { orderBy: { createdAt: "asc" } },
+      shoppingListItems: {
+        orderBy: { createdAt: "asc" },
+        include: { product: true },
+      },
       favoriteItems: { orderBy: { createdAt: "asc" } },
     },
   });
@@ -39,6 +47,7 @@ async function getUserProfile(
     email: user.email,
     image: user.image,
     clearOnCheck: user.clearOnCheck,
+    themeColor: isThemeColor(user.themeColor) ? user.themeColor : "pink",
     stores: user.stores,
     shoppingList: user.shoppingListItems,
     favoriteItems: user.favoriteItems,
@@ -61,6 +70,17 @@ export const userRouter = createTRPCRouter({
       return getUserProfile(ctx.db, ctx.session.user.id);
     }),
 
+  setThemeColor: protectedProcedure
+    .input(z.object({ themeColor: z.enum(THEME_COLORS) }))
+    .mutation(async ({ ctx, input }) => {
+      await ctx.db.user.update({
+        where: { id: ctx.session.user.id },
+        data: { themeColor: input.themeColor },
+      });
+
+      return getUserProfile(ctx.db, ctx.session.user.id);
+    }),
+
   addStore: protectedProcedure
     .input(storeInput)
     .mutation(async ({ ctx, input }) => {
@@ -74,8 +94,12 @@ export const userRouter = createTRPCRouter({
         create: {
           userId: ctx.session.user.id,
           ...input,
+          website: input.website ?? null,
         },
-        update: input,
+        update: {
+          ...input,
+          website: input.website ?? null,
+        },
       });
 
       return getUserProfile(ctx.db, ctx.session.user.id);
@@ -92,12 +116,95 @@ export const userRouter = createTRPCRouter({
     }),
 
   addShoppingItem: protectedProcedure
-    .input(z.object({ text: z.string().min(1) }))
+    .input(z.object({ name: z.string().min(1) }))
     .mutation(async ({ ctx, input }) => {
+      const name = input.name.trim();
+      const existing = await findProductByExactName(ctx.db, name);
+
+      if (existing) {
+        await ctx.db.shoppingListItem.create({
+          data: {
+            userId: ctx.session.user.id,
+            productId: existing.id,
+          },
+        });
+
+        return {
+          profile: await getUserProfile(ctx.db, ctx.session.user.id),
+          priceLookup: null as GroceryPriceLookupResult | null,
+        };
+      }
+
+      const product = await ctx.db.product.create({
+        data: { name },
+      });
+
+      const user = await ctx.db.user.findUnique({
+        where: { id: ctx.session.user.id },
+        include: { stores: true },
+      });
+
+      let priceLookup: GroceryPriceLookupResult | null = null;
+
+      if (user && user.stores.length > 0) {
+        try {
+          priceLookup = await lookupGroceryPrices({
+            stores: user.stores.map((store) => ({
+              id: store.id,
+              name: store.name,
+              address: store.address,
+              placeId: store.placeId,
+              lat: store.lat,
+              lng: store.lng,
+              website: store.website,
+            })),
+            products: [{ id: product.id, name: product.name }],
+          });
+        } catch (error) {
+          console.error("Gemini price lookup failed:", error);
+        }
+      }
+
       await ctx.db.shoppingListItem.create({
         data: {
           userId: ctx.session.user.id,
-          text: input.text.trim(),
+          productId: product.id,
+        },
+      });
+
+      return {
+        profile: await getUserProfile(ctx.db, ctx.session.user.id),
+        priceLookup,
+      };
+    }),
+
+  searchProducts: protectedProcedure
+    .input(z.object({ query: z.string().min(1) }))
+    .query(async ({ ctx, input }) => {
+      return searchProductsByName(ctx.db, input.query);
+    }),
+
+  findProductByName: protectedProcedure
+    .input(z.object({ name: z.string().min(1) }))
+    .query(async ({ ctx, input }) => {
+      return findProductByExactName(ctx.db, input.name);
+    }),
+
+  addProductToList: protectedProcedure
+    .input(z.object({ productId: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      const product = await ctx.db.product.findUnique({
+        where: { id: input.productId },
+      });
+
+      if (!product) {
+        throw new TRPCError({ code: "NOT_FOUND", message: "Product not found" });
+      }
+
+      await ctx.db.shoppingListItem.create({
+        data: {
+          userId: ctx.session.user.id,
+          productId: product.id,
         },
       });
 
@@ -198,7 +305,11 @@ export const userRouter = createTRPCRouter({
       await ctx.db.shoppingListItem.create({
         data: {
           userId: ctx.session.user.id,
-          text: favorite.text,
+          productId: (
+            await ctx.db.product.create({
+              data: { name: favorite.text },
+            })
+          ).id,
         },
       });
 

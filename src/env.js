@@ -25,6 +25,7 @@ export const env = createEnv({
       process.env.NODE_ENV === "production"
         ? z.string().url()
         : z.string().url().optional(),
+    GOOGLE_GENAI_API_KEY: z.string().optional(),
   },
 
   /**
@@ -50,6 +51,7 @@ export const env = createEnv({
     TURSO_DATABASE_URL: process.env.TURSO_DATABASE_URL,
     NEXT_PUBLIC_GOOGLE_MAPS_API_KEY:
       process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY,
+    GOOGLE_GENAI_API_KEY: process.env.GOOGLE_GENAI_API_KEY,
   },
   /**
    * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially
