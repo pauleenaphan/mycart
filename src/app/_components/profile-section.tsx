@@ -1,6 +1,9 @@
 "use client";
 
-import { signOutFromApp } from "~/server/auth/actions";
+import {
+  signInWithDiscordForm,
+  signOutFromApp,
+} from "~/server/auth/actions";
 import { CheckIcon } from "~/app/_components/icons";
 import { SettingsToggle } from "~/app/_components/settings-toggle";
 import { useProfileCache } from "~/hooks/use-profile-cache";
@@ -29,6 +32,21 @@ export function ProfileSection({ user }: ProfileSectionProps) {
     <div className="mx-auto w-full max-w-lg px-4 py-5 sm:py-6">
       <h1 className="page-title mb-5 sm:mb-6">Profile</h1>
 
+      {user.isGuest && (
+        <div className="app-card mb-6 border-amber-200 bg-amber-50 p-4">
+          <p className="text-sm leading-relaxed text-amber-900">
+            You&apos;re browsing as a guest. Sign in with Discord to save your
+            stores and list across devices.
+          </p>
+          <form action={signInWithDiscordForm} className="mt-3">
+            <input type="hidden" name="callbackUrl" value="/" />
+            <button type="submit" className="btn-discord w-full">
+              Sign in with Discord
+            </button>
+          </form>
+        </div>
+      )}
+
       <div className="app-card mb-6 flex items-center gap-4 p-4">
         {user.image ? (
           // eslint-disable-next-line @next/next/no-img-element
@@ -46,8 +64,12 @@ export function ProfileSection({ user }: ProfileSectionProps) {
           <p className="truncate font-medium text-stone-900">
             {user.name ?? "Signed in"}
           </p>
-          {user.email && (
-            <p className="truncate text-sm text-stone-500">{user.email}</p>
+          {user.isGuest ? (
+            <p className="truncate text-sm text-stone-500">Guest account</p>
+          ) : (
+            user.email && (
+              <p className="truncate text-sm text-stone-500">{user.email}</p>
+            )
           )}
         </div>
       </div>

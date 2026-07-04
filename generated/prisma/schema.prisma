@@ -12,7 +12,8 @@ datasource db {
   // Further reading:
   // https://next-auth.js.org/adapters/prisma#create-the-prisma-schema
   // https://www.prisma.io/docs/reference/api-reference/prisma-schema-reference#string
-  url      = env("DATABASE_URL")
+  // Placeholder for Prisma CLI validation only — runtime uses Turso via adapter in src/server/db.ts
+  url      = "file:./dev.db"
 }
 
 // Necessary for Next auth
@@ -52,6 +53,7 @@ model User {
   clearOnCheck            Boolean               @default(false)
   useGeminiPrices         Boolean               @default(true)
   collapseCompletedStores Boolean               @default(false)
+  isGuest                 Boolean               @default(false)
   themeColor              String                @default("pink")
   accounts                Account[]
   sessions                Session[]

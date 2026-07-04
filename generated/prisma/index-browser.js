@@ -150,6 +150,7 @@ exports.Prisma.UserScalarFieldEnum = {
   clearOnCheck: 'clearOnCheck',
   useGeminiPrices: 'useGeminiPrices',
   collapseCompletedStores: 'collapseCompletedStores',
+  isGuest: 'isGuest',
   themeColor: 'themeColor'
 };
 

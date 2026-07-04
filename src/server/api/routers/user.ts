@@ -57,6 +57,7 @@ async function getUserProfile(
     clearOnCheck: user.clearOnCheck,
     useGeminiPrices: user.useGeminiPrices,
     collapseCompletedStores: user.collapseCompletedStores,
+    isGuest: user.isGuest,
     themeColor: isThemeColor(user.themeColor) ? user.themeColor : "pink",
     stores: user.stores,
     shoppingList: user.shoppingListItems,

@@ -183,7 +183,7 @@ export function GroceryList({ user }: GroceryListProps) {
 
   return (
     <>
-      <header className="sticky top-[calc(3.25rem+var(--spacing-safe-top))] z-10 overflow-visible border-b border-stone-200/80 bg-canvas/90 py-3 sm:py-4 backdrop-blur-md">
+      <header className="list-search-header z-10 overflow-visible border-b border-stone-200/80 bg-canvas/90 py-2.5 sm:py-4 md:sticky md:top-[calc(3.25rem+var(--spacing-safe-top))] md:backdrop-blur-md">
         <form
           className="relative mx-auto w-full max-w-lg px-4"
           ref={containerRef}
@@ -237,7 +237,7 @@ export function GroceryList({ user }: GroceryListProps) {
         </form>
       </header>
 
-      <div className="mx-auto w-full max-w-lg px-4 py-6">
+      <div className="mx-auto w-full max-w-lg px-4 py-4 sm:py-6">
         {priceLookupError && (
           <div
             role="alert"

@@ -3886,6 +3886,7 @@ export namespace Prisma {
     clearOnCheck: boolean | null
     useGeminiPrices: boolean | null
     collapseCompletedStores: boolean | null
+    isGuest: boolean | null
     themeColor: string | null
   }
 
@@ -3898,6 +3899,7 @@ export namespace Prisma {
     clearOnCheck: boolean | null
     useGeminiPrices: boolean | null
     collapseCompletedStores: boolean | null
+    isGuest: boolean | null
     themeColor: string | null
   }
 
@@ -3910,6 +3912,7 @@ export namespace Prisma {
     clearOnCheck: number
     useGeminiPrices: number
     collapseCompletedStores: number
+    isGuest: number
     themeColor: number
     _all: number
   }
@@ -3924,6 +3927,7 @@ export namespace Prisma {
     clearOnCheck?: true
     useGeminiPrices?: true
     collapseCompletedStores?: true
+    isGuest?: true
     themeColor?: true
   }
 
@@ -3936,6 +3940,7 @@ export namespace Prisma {
     clearOnCheck?: true
     useGeminiPrices?: true
     collapseCompletedStores?: true
+    isGuest?: true
     themeColor?: true
   }
 
@@ -3948,6 +3953,7 @@ export namespace Prisma {
     clearOnCheck?: true
     useGeminiPrices?: true
     collapseCompletedStores?: true
+    isGuest?: true
     themeColor?: true
     _all?: true
   }
@@ -4033,6 +4039,7 @@ export namespace Prisma {
     clearOnCheck: boolean
     useGeminiPrices: boolean
     collapseCompletedStores: boolean
+    isGuest: boolean
     themeColor: string
     _count: UserCountAggregateOutputType | null
     _min: UserMinAggregateOutputType | null
@@ -4062,6 +4069,7 @@ export namespace Prisma {
     clearOnCheck?: boolean
     useGeminiPrices?: boolean
     collapseCompletedStores?: boolean
+    isGuest?: boolean
     themeColor?: boolean
     accounts?: boolean | User$accountsArgs<ExtArgs>
     sessions?: boolean | User$sessionsArgs<ExtArgs>
@@ -4080,6 +4088,7 @@ export namespace Prisma {
     clearOnCheck?: boolean
     useGeminiPrices?: boolean
     collapseCompletedStores?: boolean
+    isGuest?: boolean
     themeColor?: boolean
   }, ExtArgs["result"]["user"]>
 
@@ -4092,6 +4101,7 @@ export namespace Prisma {
     clearOnCheck?: boolean
     useGeminiPrices?: boolean
     collapseCompletedStores?: boolean
+    isGuest?: boolean
     themeColor?: boolean
   }, ExtArgs["result"]["user"]>
 
@@ -4104,10 +4114,11 @@ export namespace Prisma {
     clearOnCheck?: boolean
     useGeminiPrices?: boolean
     collapseCompletedStores?: boolean
+    isGuest?: boolean
     themeColor?: boolean
   }
 
-  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "email" | "emailVerified" | "image" | "clearOnCheck" | "useGeminiPrices" | "collapseCompletedStores" | "themeColor", ExtArgs["result"]["user"]>
+  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "email" | "emailVerified" | "image" | "clearOnCheck" | "useGeminiPrices" | "collapseCompletedStores" | "isGuest" | "themeColor", ExtArgs["result"]["user"]>
   export type UserInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     accounts?: boolean | User$accountsArgs<ExtArgs>
     sessions?: boolean | User$sessionsArgs<ExtArgs>
@@ -4137,6 +4148,7 @@ export namespace Prisma {
       clearOnCheck: boolean
       useGeminiPrices: boolean
       collapseCompletedStores: boolean
+      isGuest: boolean
       themeColor: string
     }, ExtArgs["result"]["user"]>
     composites: {}
@@ -4574,6 +4586,7 @@ export namespace Prisma {
     readonly clearOnCheck: FieldRef<"User", 'Boolean'>
     readonly useGeminiPrices: FieldRef<"User", 'Boolean'>
     readonly collapseCompletedStores: FieldRef<"User", 'Boolean'>
+    readonly isGuest: FieldRef<"User", 'Boolean'>
     readonly themeColor: FieldRef<"User", 'String'>
   }
     
@@ -10454,6 +10467,7 @@ export namespace Prisma {
     clearOnCheck: 'clearOnCheck',
     useGeminiPrices: 'useGeminiPrices',
     collapseCompletedStores: 'collapseCompletedStores',
+    isGuest: 'isGuest',
     themeColor: 'themeColor'
   };
 
@@ -10732,6 +10746,7 @@ export namespace Prisma {
     clearOnCheck?: BoolFilter<"User"> | boolean
     useGeminiPrices?: BoolFilter<"User"> | boolean
     collapseCompletedStores?: BoolFilter<"User"> | boolean
+    isGuest?: BoolFilter<"User"> | boolean
     themeColor?: StringFilter<"User"> | string
     accounts?: AccountListRelationFilter
     sessions?: SessionListRelationFilter
@@ -10749,6 +10764,7 @@ export namespace Prisma {
     clearOnCheck?: SortOrder
     useGeminiPrices?: SortOrder
     collapseCompletedStores?: SortOrder
+    isGuest?: SortOrder
     themeColor?: SortOrder
     accounts?: AccountOrderByRelationAggregateInput
     sessions?: SessionOrderByRelationAggregateInput
@@ -10769,6 +10785,7 @@ export namespace Prisma {
     clearOnCheck?: BoolFilter<"User"> | boolean
     useGeminiPrices?: BoolFilter<"User"> | boolean
     collapseCompletedStores?: BoolFilter<"User"> | boolean
+    isGuest?: BoolFilter<"User"> | boolean
     themeColor?: StringFilter<"User"> | string
     accounts?: AccountListRelationFilter
     sessions?: SessionListRelationFilter
@@ -10786,6 +10803,7 @@ export namespace Prisma {
     clearOnCheck?: SortOrder
     useGeminiPrices?: SortOrder
     collapseCompletedStores?: SortOrder
+    isGuest?: SortOrder
     themeColor?: SortOrder
     _count?: UserCountOrderByAggregateInput
     _max?: UserMaxOrderByAggregateInput
@@ -10804,6 +10822,7 @@ export namespace Prisma {
     clearOnCheck?: BoolWithAggregatesFilter<"User"> | boolean
     useGeminiPrices?: BoolWithAggregatesFilter<"User"> | boolean
     collapseCompletedStores?: BoolWithAggregatesFilter<"User"> | boolean
+    isGuest?: BoolWithAggregatesFilter<"User"> | boolean
     themeColor?: StringWithAggregatesFilter<"User"> | string
   }
 
@@ -11251,6 +11270,7 @@ export namespace Prisma {
     clearOnCheck?: boolean
     useGeminiPrices?: boolean
     collapseCompletedStores?: boolean
+    isGuest?: boolean
     themeColor?: string
     accounts?: AccountCreateNestedManyWithoutUserInput
     sessions?: SessionCreateNestedManyWithoutUserInput
@@ -11268,6 +11288,7 @@ export namespace Prisma {
     clearOnCheck?: boolean
     useGeminiPrices?: boolean
     collapseCompletedStores?: boolean
+    isGuest?: boolean
     themeColor?: string
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
@@ -11285,6 +11306,7 @@ export namespace Prisma {
     clearOnCheck?: BoolFieldUpdateOperationsInput | boolean
     useGeminiPrices?: BoolFieldUpdateOperationsInput | boolean
     collapseCompletedStores?: BoolFieldUpdateOperationsInput | boolean
+    isGuest?: BoolFieldUpdateOperationsInput | boolean
     themeColor?: StringFieldUpdateOperationsInput | string
     accounts?: AccountUpdateManyWithoutUserNestedInput
     sessions?: SessionUpdateManyWithoutUserNestedInput
@@ -11302,6 +11324,7 @@ export namespace Prisma {
     clearOnCheck?: BoolFieldUpdateOperationsInput | boolean
     useGeminiPrices?: BoolFieldUpdateOperationsInput | boolean
     collapseCompletedStores?: BoolFieldUpdateOperationsInput | boolean
+    isGuest?: BoolFieldUpdateOperationsInput | boolean
     themeColor?: StringFieldUpdateOperationsInput | string
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
@@ -11319,6 +11342,7 @@ export namespace Prisma {
     clearOnCheck?: boolean
     useGeminiPrices?: boolean
     collapseCompletedStores?: boolean
+    isGuest?: boolean
     themeColor?: string
   }
 
@@ -11331,6 +11355,7 @@ export namespace Prisma {
     clearOnCheck?: BoolFieldUpdateOperationsInput | boolean
     useGeminiPrices?: BoolFieldUpdateOperationsInput | boolean
     collapseCompletedStores?: BoolFieldUpdateOperationsInput | boolean
+    isGuest?: BoolFieldUpdateOperationsInput | boolean
     themeColor?: StringFieldUpdateOperationsInput | string
   }
 
@@ -11343,6 +11368,7 @@ export namespace Prisma {
     clearOnCheck?: BoolFieldUpdateOperationsInput | boolean
     useGeminiPrices?: BoolFieldUpdateOperationsInput | boolean
     collapseCompletedStores?: BoolFieldUpdateOperationsInput | boolean
+    isGuest?: BoolFieldUpdateOperationsInput | boolean
     themeColor?: StringFieldUpdateOperationsInput | string
   }
 
@@ -11898,6 +11924,7 @@ export namespace Prisma {
     clearOnCheck?: SortOrder
     useGeminiPrices?: SortOrder
     collapseCompletedStores?: SortOrder
+    isGuest?: SortOrder
     themeColor?: SortOrder
   }
 
@@ -11910,6 +11937,7 @@ export namespace Prisma {
     clearOnCheck?: SortOrder
     useGeminiPrices?: SortOrder
     collapseCompletedStores?: SortOrder
+    isGuest?: SortOrder
     themeColor?: SortOrder
   }
 
@@ -11922,6 +11950,7 @@ export namespace Prisma {
     clearOnCheck?: SortOrder
     useGeminiPrices?: SortOrder
     collapseCompletedStores?: SortOrder
+    isGuest?: SortOrder
     themeColor?: SortOrder
   }
 
@@ -12763,6 +12792,7 @@ export namespace Prisma {
     clearOnCheck?: boolean
     useGeminiPrices?: boolean
     collapseCompletedStores?: boolean
+    isGuest?: boolean
     themeColor?: string
     sessions?: SessionCreateNestedManyWithoutUserInput
     stores?: StoreCreateNestedManyWithoutUserInput
@@ -12779,6 +12809,7 @@ export namespace Prisma {
     clearOnCheck?: boolean
     useGeminiPrices?: boolean
     collapseCompletedStores?: boolean
+    isGuest?: boolean
     themeColor?: string
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
     stores?: StoreUncheckedCreateNestedManyWithoutUserInput
@@ -12811,6 +12842,7 @@ export namespace Prisma {
     clearOnCheck?: BoolFieldUpdateOperationsInput | boolean
     useGeminiPrices?: BoolFieldUpdateOperationsInput | boolean
     collapseCompletedStores?: BoolFieldUpdateOperationsInput | boolean
+    isGuest?: BoolFieldUpdateOperationsInput | boolean
     themeColor?: StringFieldUpdateOperationsInput | string
     sessions?: SessionUpdateManyWithoutUserNestedInput
     stores?: StoreUpdateManyWithoutUserNestedInput
@@ -12827,6 +12859,7 @@ export namespace Prisma {
     clearOnCheck?: BoolFieldUpdateOperationsInput | boolean
     useGeminiPrices?: BoolFieldUpdateOperationsInput | boolean
     collapseCompletedStores?: BoolFieldUpdateOperationsInput | boolean
+    isGuest?: BoolFieldUpdateOperationsInput | boolean
     themeColor?: StringFieldUpdateOperationsInput | string
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
     stores?: StoreUncheckedUpdateManyWithoutUserNestedInput
@@ -12843,6 +12876,7 @@ export namespace Prisma {
     clearOnCheck?: boolean
     useGeminiPrices?: boolean
     collapseCompletedStores?: boolean
+    isGuest?: boolean
     themeColor?: string
     accounts?: AccountCreateNestedManyWithoutUserInput
     stores?: StoreCreateNestedManyWithoutUserInput
@@ -12859,6 +12893,7 @@ export namespace Prisma {
     clearOnCheck?: boolean
     useGeminiPrices?: boolean
     collapseCompletedStores?: boolean
+    isGuest?: boolean
     themeColor?: string
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
     stores?: StoreUncheckedCreateNestedManyWithoutUserInput
@@ -12891,6 +12926,7 @@ export namespace Prisma {
     clearOnCheck?: BoolFieldUpdateOperationsInput | boolean
     useGeminiPrices?: BoolFieldUpdateOperationsInput | boolean
     collapseCompletedStores?: BoolFieldUpdateOperationsInput | boolean
+    isGuest?: BoolFieldUpdateOperationsInput | boolean
     themeColor?: StringFieldUpdateOperationsInput | string
     accounts?: AccountUpdateManyWithoutUserNestedInput
     stores?: StoreUpdateManyWithoutUserNestedInput
@@ -12907,6 +12943,7 @@ export namespace Prisma {
     clearOnCheck?: BoolFieldUpdateOperationsInput | boolean
     useGeminiPrices?: BoolFieldUpdateOperationsInput | boolean
     collapseCompletedStores?: BoolFieldUpdateOperationsInput | boolean
+    isGuest?: BoolFieldUpdateOperationsInput | boolean
     themeColor?: StringFieldUpdateOperationsInput | string
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
     stores?: StoreUncheckedUpdateManyWithoutUserNestedInput
@@ -13205,6 +13242,7 @@ export namespace Prisma {
     clearOnCheck?: boolean
     useGeminiPrices?: boolean
     collapseCompletedStores?: boolean
+    isGuest?: boolean
     themeColor?: string
     accounts?: AccountCreateNestedManyWithoutUserInput
     sessions?: SessionCreateNestedManyWithoutUserInput
@@ -13221,6 +13259,7 @@ export namespace Prisma {
     clearOnCheck?: boolean
     useGeminiPrices?: boolean
     collapseCompletedStores?: boolean
+    isGuest?: boolean
     themeColor?: string
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
@@ -13278,6 +13317,7 @@ export namespace Prisma {
     clearOnCheck?: BoolFieldUpdateOperationsInput | boolean
     useGeminiPrices?: BoolFieldUpdateOperationsInput | boolean
     collapseCompletedStores?: BoolFieldUpdateOperationsInput | boolean
+    isGuest?: BoolFieldUpdateOperationsInput | boolean
     themeColor?: StringFieldUpdateOperationsInput | string
     accounts?: AccountUpdateManyWithoutUserNestedInput
     sessions?: SessionUpdateManyWithoutUserNestedInput
@@ -13294,6 +13334,7 @@ export namespace Prisma {
     clearOnCheck?: BoolFieldUpdateOperationsInput | boolean
     useGeminiPrices?: BoolFieldUpdateOperationsInput | boolean
     collapseCompletedStores?: BoolFieldUpdateOperationsInput | boolean
+    isGuest?: BoolFieldUpdateOperationsInput | boolean
     themeColor?: StringFieldUpdateOperationsInput | string
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
@@ -13326,6 +13367,7 @@ export namespace Prisma {
     clearOnCheck?: boolean
     useGeminiPrices?: boolean
     collapseCompletedStores?: boolean
+    isGuest?: boolean
     themeColor?: string
     accounts?: AccountCreateNestedManyWithoutUserInput
     sessions?: SessionCreateNestedManyWithoutUserInput
@@ -13342,6 +13384,7 @@ export namespace Prisma {
     clearOnCheck?: boolean
     useGeminiPrices?: boolean
     collapseCompletedStores?: boolean
+    isGuest?: boolean
     themeColor?: string
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
@@ -13416,6 +13459,7 @@ export namespace Prisma {
     clearOnCheck?: BoolFieldUpdateOperationsInput | boolean
     useGeminiPrices?: BoolFieldUpdateOperationsInput | boolean
     collapseCompletedStores?: BoolFieldUpdateOperationsInput | boolean
+    isGuest?: BoolFieldUpdateOperationsInput | boolean
     themeColor?: StringFieldUpdateOperationsInput | string
     accounts?: AccountUpdateManyWithoutUserNestedInput
     sessions?: SessionUpdateManyWithoutUserNestedInput
@@ -13432,6 +13476,7 @@ export namespace Prisma {
     clearOnCheck?: BoolFieldUpdateOperationsInput | boolean
     useGeminiPrices?: BoolFieldUpdateOperationsInput | boolean
     collapseCompletedStores?: BoolFieldUpdateOperationsInput | boolean
+    isGuest?: BoolFieldUpdateOperationsInput | boolean
     themeColor?: StringFieldUpdateOperationsInput | string
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
@@ -13543,6 +13588,7 @@ export namespace Prisma {
     clearOnCheck?: boolean
     useGeminiPrices?: boolean
     collapseCompletedStores?: boolean
+    isGuest?: boolean
     themeColor?: string
     accounts?: AccountCreateNestedManyWithoutUserInput
     sessions?: SessionCreateNestedManyWithoutUserInput
@@ -13559,6 +13605,7 @@ export namespace Prisma {
     clearOnCheck?: boolean
     useGeminiPrices?: boolean
     collapseCompletedStores?: boolean
+    isGuest?: boolean
     themeColor?: string
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
@@ -13591,6 +13638,7 @@ export namespace Prisma {
     clearOnCheck?: BoolFieldUpdateOperationsInput | boolean
     useGeminiPrices?: BoolFieldUpdateOperationsInput | boolean
     collapseCompletedStores?: BoolFieldUpdateOperationsInput | boolean
+    isGuest?: BoolFieldUpdateOperationsInput | boolean
     themeColor?: StringFieldUpdateOperationsInput | string
     accounts?: AccountUpdateManyWithoutUserNestedInput
     sessions?: SessionUpdateManyWithoutUserNestedInput
@@ -13607,6 +13655,7 @@ export namespace Prisma {
     clearOnCheck?: BoolFieldUpdateOperationsInput | boolean
     useGeminiPrices?: BoolFieldUpdateOperationsInput | boolean
     collapseCompletedStores?: BoolFieldUpdateOperationsInput | boolean
+    isGuest?: BoolFieldUpdateOperationsInput | boolean
     themeColor?: StringFieldUpdateOperationsInput | string
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput

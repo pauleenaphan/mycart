@@ -77,7 +77,23 @@ body {
 }
 
 .app-shell-main {
-  padding-bottom: calc(5.5rem + var(--spacing-safe-bottom));
+  padding-bottom: calc(4.25rem + var(--spacing-safe-bottom));
+}
+
+@media (min-width: 640px) {
+  .app-shell-main {
+    padding-bottom: calc(5.5rem + var(--spacing-safe-bottom));
+  }
+}
+
+.list-search-header {
+  background: var(--color-canvas);
+}
+
+@media (min-width: 768px) {
+  .list-search-header {
+    background: color-mix(in srgb, var(--color-canvas) 90%, transparent);
+  }
 }
 
 @keyframes pop-in {

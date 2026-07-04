@@ -26,23 +26,23 @@ You can check out the [create-t3-app GitHub repository](https://github.com/t3-os
 
 ## Prisma + Turso
 
-Runtime Prisma queries use Turso through `@prisma/adapter-libsql`.
+This project uses **Turso only** — there is no local SQLite database. The app connects through `@prisma/adapter-libsql` at runtime; Prisma CLI commands use the same adapter via `prisma.config.ts`.
 
-Set these environment variables:
+Set these environment variables in `.env`:
 
 ```env
-DATABASE_URL="file:./db.sqlite"
 TURSO_DATABASE_URL="libsql://your-database.turso.io"
 TURSO_AUTH_TOKEN="your-turso-token"
 ```
 
-Use `DATABASE_URL` for local Prisma migration generation:
+Sync schema changes to Turso:
 
 ```sh
+npm run db:push
 npm run db:generate
 ```
 
-Then apply the generated SQL file to Turso with the Turso CLI:
+To apply a migration SQL file manually with the Turso CLI:
 
 ```sh
 turso db shell <database-name> < ./prisma/migrations/<migration-name>/migration.sql

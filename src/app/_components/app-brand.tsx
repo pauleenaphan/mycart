@@ -11,9 +11,9 @@ const logoPixels = {
 } as const;
 
 const logoSizes = {
-  sm: "h-9 w-9",
-  md: "h-11 w-11",
-  lg: "h-20 w-20",
+  sm: "h-8 w-8 rounded-lg sm:h-9 sm:w-9 sm:rounded-xl",
+  md: "h-11 w-11 rounded-xl",
+  lg: "h-20 w-20 rounded-2xl",
 };
 
 export function BrandLogo({ size = "md" }: BrandLogoProps) {
@@ -21,7 +21,7 @@ export function BrandLogo({ size = "md" }: BrandLogoProps) {
 
   return (
     <div
-      className={`relative shrink-0 overflow-hidden rounded-xl shadow-md shadow-stone-900/10 ${logoSizes[size]}`}
+      className={`relative shrink-0 overflow-hidden shadow-md shadow-stone-900/10 ${logoSizes[size]}`}
     >
       <Image
         src="/logo.png"
@@ -46,10 +46,10 @@ export function BrandName({ className = "" }: { className?: string }) {
 export function AppHeader() {
   return (
     <header className="sticky top-0 z-20 border-b border-stone-200/80 bg-canvas/95 pt-[var(--spacing-safe-top)] backdrop-blur-md">
-      <div className="mx-auto flex w-full max-w-lg items-center gap-3 px-4 py-3">
+      <div className="mx-auto flex w-full max-w-lg items-center gap-2.5 px-4 py-2.5 sm:gap-3 sm:py-3">
         <BrandLogo size="sm" />
         <div>
-          <p className="text-lg leading-none">
+          <p className="text-base leading-none sm:text-lg">
             <BrandName />
           </p>
           <p className="mt-0.5 text-xs text-stone-500">Shop smarter</p>

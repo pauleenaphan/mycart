@@ -21,15 +21,18 @@ function NavItem({ label, active, onClick, children }: NavItemProps) {
     <button
       type="button"
       onClick={onClick}
+      aria-label={label}
       aria-current={active ? "page" : undefined}
-      className={`flex min-h-14 flex-1 flex-col items-center justify-center gap-1 rounded-2xl py-2 transition ${
+      className={`flex min-h-10 flex-1 flex-col items-center justify-center gap-0.5 rounded-xl py-1 transition sm:min-h-14 sm:gap-1 sm:rounded-2xl sm:py-2 ${
         active
           ? "bg-brand-50 text-brand-700"
           : "text-stone-400 hover:text-stone-600"
       }`}
     >
       {children}
-      <span className={`text-xs ${active ? "font-semibold" : "font-medium"}`}>
+      <span
+        className={`text-[10px] leading-none sm:text-xs ${active ? "font-semibold" : "font-medium"}`}
+      >
         {label}
       </span>
     </button>
@@ -40,7 +43,7 @@ function ListIcon({ active }: { active: boolean }) {
   return (
     <svg
       viewBox="0 0 24 24"
-      className="h-6 w-6"
+      className="h-5 w-5 sm:h-6 sm:w-6"
       fill="none"
       stroke="currentColor"
       strokeWidth={active ? 2.25 : 1.75}
@@ -59,7 +62,7 @@ function ListIcon({ active }: { active: boolean }) {
 function StoreIcon({ active }: { active: boolean }) {
   return (
     <StorePinIcon
-      className="h-6 w-6"
+      className="h-5 w-5 sm:h-6 sm:w-6"
       strokeWidth={active ? 2.25 : 1.75}
     />
   );
@@ -69,7 +72,7 @@ function ProfileIcon({ active }: { active: boolean }) {
   return (
     <svg
       viewBox="0 0 24 24"
-      className="h-6 w-6"
+      className="h-5 w-5 sm:h-6 sm:w-6"
       fill="none"
       stroke="currentColor"
       strokeWidth={active ? 2.25 : 1.75}
@@ -91,9 +94,9 @@ export function AppNav({ activeTab, onChange }: AppNavProps) {
   return (
     <nav
       aria-label="Main"
-      className="fixed inset-x-0 bottom-0 z-30 px-4 pt-2 pb-[max(1rem,var(--spacing-safe-bottom))]"
+      className="fixed inset-x-0 bottom-0 z-30 px-3 pt-1 pb-[max(0.5rem,var(--spacing-safe-bottom))] sm:px-4 sm:pt-2 sm:pb-[max(1rem,var(--spacing-safe-bottom))]"
     >
-      <div className="mx-auto flex w-full max-w-lg gap-1 rounded-2xl border border-stone-200/80 bg-white/95 p-1.5 shadow-lg shadow-stone-900/5 backdrop-blur-md">
+      <div className="mx-auto flex w-full max-w-lg gap-0.5 rounded-xl border border-stone-200/80 bg-white/95 p-1 shadow-lg shadow-stone-900/5 backdrop-blur-md sm:gap-1 sm:rounded-2xl sm:p-1.5">
         <NavItem
           label="List"
           active={activeTab === "list"}

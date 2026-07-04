@@ -2,7 +2,10 @@ import Link from "next/link";
 
 import { AuthCardShell } from "~/app/_components/auth-card-shell";
 import { CheckIcon, DiscordIcon } from "~/app/_components/icons";
-import { signInWithDiscordForm } from "~/server/auth/actions";
+import {
+  signInAsGuestForm,
+  signInWithDiscordForm,
+} from "~/server/auth/actions";
 
 const features = [
   "Save your favorite grocery stores",
@@ -67,9 +70,16 @@ export function SignInCard({
         </button>
       </form>
 
+      <form action={signInAsGuestForm} className="mt-3">
+        <input type="hidden" name="callbackUrl" value={callbackUrl} />
+        <button type="submit" className="btn-secondary w-full">
+          Continue as guest
+        </button>
+      </form>
+
       <p className="mt-5 text-center text-xs leading-relaxed text-stone-400">
-        Sign in to sync your stores, shopping list, and favorites across
-        devices.
+        Sign in with Discord to sync across devices. Guest mode is for trying
+        the app — your data won&apos;t be saved if you leave.
       </p>
 
       {showBackLink && (

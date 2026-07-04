@@ -13,18 +13,11 @@ export const env = createEnv({
         : z.string().optional(),
     AUTH_DISCORD_ID: z.string(),
     AUTH_DISCORD_SECRET: z.string(),
-    DATABASE_URL: z.string().min(1),
     NODE_ENV: z
       .enum(["development", "test", "production"])
       .default("development"),
-    TURSO_AUTH_TOKEN:
-      process.env.NODE_ENV === "production"
-        ? z.string().min(1)
-        : z.string().optional(),
-    TURSO_DATABASE_URL:
-      process.env.NODE_ENV === "production"
-        ? z.string().url()
-        : z.string().url().optional(),
+    TURSO_AUTH_TOKEN: z.string().min(1),
+    TURSO_DATABASE_URL: z.string().url(),
     GOOGLE_GENAI_API_KEY: z.string().optional(),
   },
 
@@ -45,7 +38,6 @@ export const env = createEnv({
     AUTH_SECRET: process.env.AUTH_SECRET,
     AUTH_DISCORD_ID: process.env.AUTH_DISCORD_ID,
     AUTH_DISCORD_SECRET: process.env.AUTH_DISCORD_SECRET,
-    DATABASE_URL: process.env.DATABASE_URL,
     NODE_ENV: process.env.NODE_ENV,
     TURSO_AUTH_TOKEN: process.env.TURSO_AUTH_TOKEN,
     TURSO_DATABASE_URL: process.env.TURSO_DATABASE_URL,

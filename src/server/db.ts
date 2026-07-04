@@ -4,7 +4,7 @@ import { PrismaClient } from "../../generated/prisma";
 
 const createPrismaClient = () => {
   const adapter = new PrismaLibSQL({
-    url: env.TURSO_DATABASE_URL ?? env.DATABASE_URL,
+    url: env.TURSO_DATABASE_URL,
     authToken: env.TURSO_AUTH_TOKEN,
   });
 
