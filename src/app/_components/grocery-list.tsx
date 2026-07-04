@@ -8,7 +8,7 @@ import { StoreGroupSection } from "~/app/_components/store-group-section";
 import { useClickOutside } from "~/hooks/use-click-outside";
 import { useProfileCache } from "~/hooks/use-profile-cache";
 import { groupItemsByStore } from "~/lib/group-items-by-store";
-import { captureListItemTops, playListFlip } from "~/lib/list-flip";
+import { captureListItemTops, playListFlip, animateListItemExit } from "~/lib/list-flip";
 import { api } from "~/trpc/react";
 import { type GroceryPriceLookupResult, type PriceLookupError } from "~/types/grocery";
 import { type Product, type UserProfile } from "~/types/user";
@@ -30,6 +30,9 @@ export function GroceryList({ user }: GroceryListProps) {
   const [priceLookupError, setPriceLookupError] =
     useState<PriceLookupError | null>(null);
   const [expandedStores, setExpandedStores] = useState<Set<string>>(() => new Set());
+  const [exitingItemIds, setExitingItemIds] = useState<ReadonlySet<string>>(
+    () => new Set(),
+  );
   const flipBeforeRef = useRef<Map<string, number> | null>(null);
   const toggledItemRef = useRef<string | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -78,9 +81,28 @@ export function GroceryList({ user }: GroceryListProps) {
   });
 
   const toggleItem = api.user.toggleShoppingItem.useMutation({
-    onMutate: ({ id }) => {
+    onMutate: async ({ id }) => {
       flipBeforeRef.current = captureListItemTops();
       toggledItemRef.current = id;
+
+      await utils.user.getProfile.cancel();
+      const previous = utils.user.getProfile.getData();
+
+      if (previous) {
+        utils.user.getProfile.setData(undefined, {
+          ...previous,
+          shoppingList: previous.shoppingList.map((item) =>
+            item.id === id ? { ...item, checked: !item.checked } : item,
+          ),
+        });
+      }
+
+      return { previous };
+    },
+    onError: (_error, _variables, context) => {
+      if (context?.previous) {
+        utils.user.getProfile.setData(undefined, context.previous);
+      }
     },
     onSuccess: setUser,
   });
@@ -88,6 +110,51 @@ export function GroceryList({ user }: GroceryListProps) {
   const removeItem = api.user.removeShoppingItem.useMutation({
     onSuccess: setUser,
   });
+
+  const handleRemoveItem = (id: string) => {
+    if (exitingItemIds.has(id)) return;
+
+    setExitingItemIds((prev) => new Set(prev).add(id));
+
+    void (async () => {
+      const el = document.querySelector<HTMLElement>(
+        `[data-list-item-id="${id}"]`,
+      );
+
+      try {
+        if (el) await animateListItemExit(el);
+
+        flipBeforeRef.current = captureListItemTops();
+
+        await utils.user.getProfile.cancel();
+        const previous = utils.user.getProfile.getData();
+
+        if (previous) {
+          utils.user.getProfile.setData(undefined, {
+            ...previous,
+            shoppingList: previous.shoppingList.filter((item) => item.id !== id),
+          });
+        }
+
+        removeItem.mutate(
+          { id },
+          {
+            onError: () => {
+              if (previous) {
+                utils.user.getProfile.setData(undefined, previous);
+              }
+            },
+          },
+        );
+      } finally {
+        setExitingItemIds((prev) => {
+          const next = new Set(prev);
+          next.delete(id);
+          return next;
+        });
+      }
+    })();
+  };
 
   const clearAll = api.user.clearShoppingList.useMutation({
     onSuccess: setUser,
@@ -325,10 +392,15 @@ export function GroceryList({ user }: GroceryListProps) {
                     clearStore.isPending &&
                     clearStore.variables?.storeId === group.storeId
                   }
-                  onToggleItem={(id) => toggleItem.mutate({ id })}
-                  onRemoveItem={(id) => removeItem.mutate({ id })}
-                  isTogglingItem={toggleItem.isPending}
-                  isRemovingItem={removeItem.isPending}
+                  onToggleItem={(id) => {
+                    if (toggleItem.isPending && toggleItem.variables?.id === id) return;
+                    toggleItem.mutate({ id });
+                  }}
+                  onRemoveItem={handleRemoveItem}
+                  togglingItemId={
+                    toggleItem.isPending ? (toggleItem.variables?.id ?? null) : null
+                  }
+                  exitingItemIds={exitingItemIds}
                 />
               );
             })}

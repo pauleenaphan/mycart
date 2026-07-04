@@ -43,7 +43,41 @@ export function playListFlip(
         { transform: `translate3d(0, ${delta}px, 0)` },
         { transform: "translate3d(0, 0, 0)" },
       ],
-      { duration: 300, easing: "cubic-bezier(0.22, 1, 0.36, 1)" },
+      { duration: 350, easing: "cubic-bezier(0.22, 1, 0.36, 1)" },
     );
   }
+}
+
+export async function animateListItemExit(el: HTMLElement) {
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+  const height = el.getBoundingClientRect().height;
+  el.style.overflow = "hidden";
+  el.style.pointerEvents = "none";
+
+  await el.animate(
+    [
+      {
+        height: `${height}px`,
+        opacity: 1,
+        transform: "translate3d(0, 0, 0)",
+        marginBottom: "0px",
+      },
+      {
+        height: "0px",
+        opacity: 0,
+        transform: "translate3d(-6px, 0, 0)",
+        marginBottom: "-8px",
+        paddingTop: "0px",
+        paddingBottom: "0px",
+        borderTopWidth: "0px",
+        borderBottomWidth: "0px",
+      },
+    ],
+    {
+      duration: 280,
+      easing: "cubic-bezier(0.22, 1, 0.36, 1)",
+      fill: "forwards",
+    },
+  ).finished;
 }

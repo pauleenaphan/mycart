@@ -158,33 +158,41 @@ body {
   animation: pop-in 0.25s ease-out;
 }
 
+.list-item-exiting {
+  pointer-events: none;
+}
+
 .list-check {
   transition:
     background-color 0.2s ease,
-    border-color 0.2s ease;
+    border-color 0.2s ease,
+    transform 0.15s ease;
+}
+
+.list-check-checked {
+  transform: scale(1);
 }
 
 .list-check-mark {
-  animation: check-pop 0.22s ease-out;
+  animation: check-pop 0.18s ease-out;
 }
 
 .list-item-row {
-  transition: opacity 0.25s ease;
+  transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .list-item-label {
   color: var(--color-fg);
   line-height: 1.25rem;
-  transition: color 0.25s ease;
+  transition:
+    color 0.2s ease,
+    opacity 0.2s ease;
 }
 
 .list-item-label-checked {
   color: var(--color-fg-subtle);
+  opacity: 0.72;
   text-decoration: line-through;
-}
-
-.list-item-checked {
-  opacity: 0.55;
 }
 
 @keyframes check-pop {

@@ -12,8 +12,8 @@ type StoreGroupSectionProps = {
   isClearingStore: boolean;
   onToggleItem: (id: string) => void;
   onRemoveItem: (id: string) => void;
-  isTogglingItem: boolean;
-  isRemovingItem: boolean;
+  togglingItemId: string | null;
+  exitingItemIds: ReadonlySet<string>;
 };
 
 export function StoreGroupSection({
@@ -26,8 +26,8 @@ export function StoreGroupSection({
   isClearingStore,
   onToggleItem,
   onRemoveItem,
-  isTogglingItem,
-  isRemovingItem,
+  togglingItemId,
+  exitingItemIds,
 }: StoreGroupSectionProps) {
   const checkedCount = group.items.filter((item) => item.checked).length;
   const totalCount = group.items.length;
@@ -90,8 +90,8 @@ export function StoreGroupSection({
               item={item}
               onToggle={() => onToggleItem(item.id)}
               onRemove={() => onRemoveItem(item.id)}
-              isToggling={isTogglingItem}
-              isRemoving={isRemovingItem}
+              isToggling={togglingItemId === item.id}
+              isRemoving={exitingItemIds.has(item.id)}
             />
           ))}
         </ul>
