@@ -12,9 +12,9 @@ export function ProductSearchSuggestions({
   onSelect,
 }: ProductSearchSuggestionsProps) {
   return (
-    <div className="absolute top-full right-0 left-0 z-20 mt-1.5 max-h-[min(16rem,50dvh)] overflow-y-auto overscroll-contain rounded-xl border border-stone-200 bg-white shadow-xl shadow-stone-900/10">
+    <div className="absolute top-full right-0 left-0 z-20 mt-1.5 max-h-[min(16rem,50dvh)] overflow-y-auto overscroll-contain rounded-xl border border-edge bg-surface shadow-xl shadow-black/15">
       {isLoading ? (
-        <p className="px-3 py-2 text-sm text-stone-500">Searching...</p>
+        <p className="px-3 py-2 text-sm text-fg-muted">Searching...</p>
       ) : suggestions.length > 0 ? (
         <ul>
           {suggestions.map((product) => (
@@ -22,7 +22,7 @@ export function ProductSearchSuggestions({
               <button
                 type="button"
                 onClick={() => onSelect(product)}
-                className="w-full px-3 py-2 text-left text-sm text-stone-900 transition hover:bg-stone-50"
+                className="w-full px-3 py-2 text-left text-sm text-fg transition hover:bg-surface-muted"
               >
                 {product.name}
               </button>
@@ -30,7 +30,7 @@ export function ProductSearchSuggestions({
           ))}
         </ul>
       ) : (
-        <p className="px-3 py-2 text-sm text-stone-500">
+        <p className="px-3 py-2 text-sm text-fg-muted">
           No matching products in database
         </p>
       )}

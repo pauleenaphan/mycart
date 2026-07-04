@@ -77,7 +77,7 @@ export function StoresSection({ user }: StoresSectionProps) {
         ))}
 
       {user.stores.length === 0 ? (
-        <p className="text-sm text-stone-400">
+        <p className="text-sm text-fg-subtle">
           No stores saved yet. Add your favorite grocery spots.
         </p>
       ) : (
@@ -88,8 +88,8 @@ export function StoresSection({ user }: StoresSectionProps) {
               className="app-card flex items-start gap-3 px-4 py-4"
             >
               <div className="min-w-0 flex-1">
-                <p className="font-medium text-stone-900">{store.name}</p>
-                <p className="truncate text-sm text-stone-500">{store.address}</p>
+                <p className="font-medium text-fg">{store.name}</p>
+                <p className="truncate text-sm text-fg-muted">{store.address}</p>
                 <div className="mt-2 flex flex-wrap gap-x-3 gap-y-1">
                   {store.website && (
                     <a
@@ -115,7 +115,7 @@ export function StoresSection({ user }: StoresSectionProps) {
                 type="button"
                 onClick={() => removeStore.mutate({ id: store.id })}
                 disabled={removeStore.isPending}
-                className="icon-btn shrink-0 -mr-2 text-stone-300 transition hover:text-red-400 disabled:opacity-50"
+                className="icon-btn shrink-0 -mr-2 text-fg-subtle transition hover:text-red-400 disabled:opacity-50"
                 aria-label={`Remove ${store.name}`}
               >
                 ✕

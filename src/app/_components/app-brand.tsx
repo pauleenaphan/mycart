@@ -37,7 +37,7 @@ export function BrandLogo({ size = "md" }: BrandLogoProps) {
 
 export function BrandName({ className = "" }: { className?: string }) {
   return (
-    <span className={`font-bold tracking-tight text-stone-900 ${className}`}>
+    <span className={`font-bold tracking-tight text-fg ${className}`}>
       My<span className="text-brand-600">Cart</span>
     </span>
   );
@@ -45,14 +45,14 @@ export function BrandName({ className = "" }: { className?: string }) {
 
 export function AppHeader() {
   return (
-    <header className="sticky top-0 z-20 border-b border-stone-200/80 bg-canvas/95 pt-[var(--spacing-safe-top)] backdrop-blur-md">
+    <header className="sticky top-0 z-20 border-b border-edge/80 bg-canvas/95 pt-[var(--spacing-safe-top)] backdrop-blur-md">
       <div className="mx-auto flex w-full max-w-lg items-center gap-2.5 px-4 py-2.5 sm:gap-3 sm:py-3">
         <BrandLogo size="sm" />
         <div>
           <p className="text-base leading-none sm:text-lg">
             <BrandName />
           </p>
-          <p className="mt-0.5 text-xs text-stone-500">Shop smarter</p>
+          <p className="mt-0.5 text-xs text-fg-muted">Shop smarter</p>
         </div>
       </div>
     </header>

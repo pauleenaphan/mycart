@@ -36,7 +36,7 @@ export function StoreGroupSection({
   const isCollapsed = canCollapse && !isExpanded;
   const progress = (
     <span
-      className="shrink-0 text-xs tabular-nums text-stone-500"
+      className="shrink-0 text-xs tabular-nums text-fg-muted"
       aria-label={`${checkedCount} of ${totalCount} items checked`}
     >
       {checkedCount}/{totalCount}
@@ -54,18 +54,18 @@ export function StoreGroupSection({
             className="flex min-w-0 flex-1 items-center gap-1.5 text-left"
           >
             <ChevronDownIcon
-              className={`h-4 w-4 shrink-0 text-stone-400 transition-transform ${
+              className={`h-4 w-4 shrink-0 text-fg-subtle transition-transform ${
                 isCollapsed ? "-rotate-90" : ""
               }`}
             />
-            <span className="min-w-0 truncate text-xs font-semibold tracking-wide text-stone-700 uppercase">
+            <span className="min-w-0 truncate text-xs font-semibold tracking-wide text-fg-muted uppercase">
               {group.storeName}
             </span>
             {progress}
           </button>
         ) : (
           <div className="flex min-w-0 flex-1 items-baseline gap-2">
-            <h3 className="min-w-0 truncate text-xs font-semibold tracking-wide text-stone-700 uppercase">
+            <h3 className="min-w-0 truncate text-xs font-semibold tracking-wide text-fg-muted uppercase">
               {group.storeName}
             </h3>
             {progress}
@@ -77,7 +77,7 @@ export function StoreGroupSection({
           disabled={isClearing}
           title={`Clear all items at ${group.storeName}`}
           aria-label={`Clear all items at ${group.storeName}`}
-          className="shrink-0 text-xs text-stone-500 transition hover:text-red-500 disabled:opacity-50"
+          className="shrink-0 text-xs text-fg-muted transition hover:text-red-500 disabled:opacity-50"
         >
           {isClearingStore ? "…" : "Clear"}
         </button>

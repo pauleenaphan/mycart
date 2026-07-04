@@ -52,7 +52,7 @@ export function SignInCard({
         {features.map((feature) => (
           <li
             key={feature}
-            className="flex items-start gap-3 text-sm text-stone-600"
+            className="flex items-start gap-3 text-sm text-fg-muted"
           >
             <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-brand-100 text-brand-700">
               <CheckIcon className="h-3 w-3" />
@@ -77,7 +77,7 @@ export function SignInCard({
         </button>
       </form>
 
-      <p className="mt-5 text-center text-xs leading-relaxed text-stone-400">
+      <p className="mt-5 text-center text-xs leading-relaxed text-fg-subtle">
         Sign in with Discord to sync across devices. Guest mode is for trying
         the app — your data won&apos;t be saved if you leave.
       </p>

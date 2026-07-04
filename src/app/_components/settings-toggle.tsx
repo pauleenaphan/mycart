@@ -18,12 +18,12 @@ export function SettingsToggle({
   return (
     <div
       className={`flex items-center justify-between gap-3 px-4 py-4 sm:gap-4 ${
-        borderBottom ? "border-b border-stone-100" : ""
+        borderBottom ? "border-b border-edge-subtle" : ""
       }`}
     >
       <div className="min-w-0 flex-1 pr-1">
-        <p className="font-medium text-stone-900">{label}</p>
-        <p className="mt-0.5 text-sm leading-relaxed text-stone-500">
+        <p className="font-medium text-fg">{label}</p>
+        <p className="mt-0.5 text-sm leading-relaxed text-fg-muted">
           {description}
         </p>
       </div>

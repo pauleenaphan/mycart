@@ -8,6 +8,7 @@ import { CheckIcon } from "~/app/_components/icons";
 import { SettingsToggle } from "~/app/_components/settings-toggle";
 import { useProfileCache } from "~/hooks/use-profile-cache";
 import { api } from "~/trpc/react";
+import { applyAppearance, storeDarkMode } from "~/types/appearance";
 import { THEME_OPTIONS } from "~/types/theme";
 import { type UserProfile } from "~/types/user";
 
@@ -27,14 +28,21 @@ export function ProfileSection({ user }: ProfileSectionProps) {
   const setCollapseCompletedStores =
     api.user.setCollapseCompletedStores.useMutation({ onSuccess: setUser });
   const setThemeColor = api.user.setThemeColor.useMutation({ onSuccess: setUser });
+  const setDarkMode = api.user.setDarkMode.useMutation({
+    onSuccess: (data) => {
+      setUser(data);
+      applyAppearance(data.darkMode);
+      storeDarkMode(data.darkMode);
+    },
+  });
 
   return (
     <div className="mx-auto w-full max-w-lg px-4 py-5 sm:py-6">
       <h1 className="page-title mb-5 sm:mb-6">Profile</h1>
 
       {user.isGuest && (
-        <div className="app-card mb-6 border-amber-200 bg-amber-50 p-4">
-          <p className="text-sm leading-relaxed text-amber-900">
+        <div className="app-card guest-banner mb-6 p-4">
+          <p className="guest-banner-text text-sm leading-relaxed">
             You&apos;re browsing as a guest. Sign in with Discord to save your
             stores and list across devices.
           </p>
@@ -53,7 +61,7 @@ export function ProfileSection({ user }: ProfileSectionProps) {
           <img
             src={user.image}
             alt=""
-            className="h-14 w-14 rounded-full border-2 border-stone-200 object-cover"
+            className="h-14 w-14 rounded-full border-2 border-edge object-cover"
           />
         ) : (
           <div className="flex h-14 w-14 items-center justify-center rounded-full bg-brand-100 text-lg font-semibold text-brand-700">
@@ -61,26 +69,34 @@ export function ProfileSection({ user }: ProfileSectionProps) {
           </div>
         )}
         <div className="min-w-0">
-          <p className="truncate font-medium text-stone-900">
+          <p className="truncate font-medium text-fg">
             {user.name ?? "Signed in"}
           </p>
           {user.isGuest ? (
-            <p className="truncate text-sm text-stone-500">Guest account</p>
+            <p className="truncate text-sm text-fg-muted">Guest account</p>
           ) : (
             user.email && (
-              <p className="truncate text-sm text-stone-500">{user.email}</p>
+              <p className="truncate text-sm text-fg-muted">{user.email}</p>
             )
           )}
         </div>
       </div>
 
       <section className="app-card mb-6 overflow-hidden">
-        <h2 className="border-b border-stone-100 px-4 py-3 text-xs font-semibold tracking-wider text-stone-500 uppercase">
-          Appearance
-        </h2>
+        <h2 className="section-heading">Appearance</h2>
+        <SettingsToggle
+          checked={user.darkMode}
+          disabled={setDarkMode.isPending}
+          borderBottom
+          label="Dark mode"
+          description="Use a dark background and lighter text throughout the app."
+          onChange={() =>
+            setDarkMode.mutate({ darkMode: !user.darkMode })
+          }
+        />
         <div className="px-4 py-4">
-          <p className="mb-3 font-medium text-stone-900">Theme color</p>
-          <p className="mb-4 text-sm text-stone-500">
+          <p className="mb-3 font-medium text-fg">Theme color</p>
+          <p className="mb-4 text-sm text-fg-muted">
             Choose an accent color for buttons, links, and highlights.
           </p>
           <div className="grid grid-cols-4 gap-2 sm:gap-3">
@@ -100,8 +116,8 @@ export function ProfileSection({ user }: ProfileSectionProps) {
                   <span
                     className={`flex h-10 w-10 items-center justify-center rounded-full transition sm:h-11 sm:w-11 ${
                       selected
-                        ? "ring-2 ring-offset-2 ring-stone-900"
-                        : "ring-1 ring-stone-200"
+                        ? "ring-2 ring-offset-2 ring-fg ring-offset-surface"
+                        : "ring-1 ring-edge"
                     }`}
                     style={{ backgroundColor: theme.swatch }}
                   >
@@ -110,8 +126,8 @@ export function ProfileSection({ user }: ProfileSectionProps) {
                   <span
                     className={`text-xs ${
                       selected
-                        ? "font-semibold text-stone-900"
-                        : "font-medium text-stone-500"
+                        ? "font-semibold text-fg"
+                        : "font-medium text-fg-muted"
                     }`}
                   >
                     {theme.label}
@@ -124,9 +140,7 @@ export function ProfileSection({ user }: ProfileSectionProps) {
       </section>
 
       <section className="app-card overflow-hidden">
-        <h2 className="border-b border-stone-100 px-4 py-3 text-xs font-semibold tracking-wider text-stone-500 uppercase">
-          Settings
-        </h2>
+        <h2 className="section-heading">Settings</h2>
         <SettingsToggle
           checked={user.useGeminiPrices}
           disabled={setUseGeminiPrices.isPending}
@@ -165,7 +179,7 @@ export function ProfileSection({ user }: ProfileSectionProps) {
       <form action={signOutFromApp} className="mt-6">
         <button
           type="submit"
-          className="app-card w-full px-4 py-3 text-center text-sm font-medium text-red-600 transition hover:bg-red-50"
+          className="sign-out-btn app-card w-full px-4 py-3 text-center text-sm font-medium text-red-500 transition"
         >
           Sign out
         </button>

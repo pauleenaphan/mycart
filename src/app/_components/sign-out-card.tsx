@@ -10,7 +10,7 @@ type SignOutCardProps = {
 export function SignOutCard({ showBackLink = true }: SignOutCardProps) {
   return (
     <AuthCardShell subtitle="Sign out of your account">
-      <p className="mb-6 text-center text-sm leading-relaxed text-stone-600 sm:mb-8">
+      <p className="mb-6 text-center text-sm leading-relaxed text-fg-muted sm:mb-8">
         You&apos;ll need to sign in again to access your stores, shopping list,
         and favorites.
       </p>

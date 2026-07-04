@@ -33,7 +33,7 @@ export function ShoppingListItem({
           className={`list-check flex h-5 w-5 shrink-0 items-center justify-center rounded-md border-2 ${
             item.checked
               ? "list-check-checked border-brand-600 bg-brand-600 text-white"
-              : "border-stone-300 bg-white"
+              : "border-edge bg-surface"
           }`}
           aria-label={item.checked ? "Uncheck item" : "Check item"}
         >
@@ -52,7 +52,7 @@ export function ShoppingListItem({
           type="button"
           onClick={onRemove}
           disabled={isRemoving}
-          className="shrink-0 rounded-md p-1 text-stone-300 transition hover:text-red-400 disabled:opacity-50"
+          className="shrink-0 rounded-md p-1 text-fg-subtle transition hover:text-red-400 disabled:opacity-50"
           aria-label="Remove item"
         >
           ✕

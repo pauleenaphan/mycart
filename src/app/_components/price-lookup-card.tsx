@@ -28,12 +28,12 @@ export function PriceLookupCard({
     <div className="app-card list-item-enter mb-4 p-4">
       <div className="mb-2 flex items-center justify-between gap-2">
         <div className="min-w-0 flex-1">
-          <h3 className="text-sm font-semibold text-stone-800">
+          <h3 className="text-sm font-semibold text-fg">
             Prices from Gemini
           </h3>
           {lookupProduct && (
             <div className="mt-1 flex items-center gap-2">
-              <p className="truncate text-base font-medium text-stone-900">
+              <p className="truncate text-base font-medium text-fg">
                 {lookupProduct.productName}
               </p>
               <button
@@ -47,7 +47,7 @@ export function PriceLookupCard({
                 className={`rounded-lg p-1.5 transition disabled:opacity-50 ${
                   favorited
                     ? "bg-amber-50 text-amber-500"
-                    : "text-stone-400 hover:bg-stone-100 hover:text-amber-500"
+                    : "text-fg-subtle hover:bg-surface-muted hover:text-amber-500"
                 }`}
               >
                 <StarIcon className="h-4 w-4" filled={favorited} />
@@ -58,14 +58,14 @@ export function PriceLookupCard({
         <button
           type="button"
           onClick={onDismiss}
-          className="icon-btn shrink-0 -mr-2 text-stone-400 transition hover:text-stone-600"
+          className="icon-btn shrink-0 -mr-2 text-fg-subtle transition hover:text-fg-muted"
           aria-label="Dismiss prices"
         >
           ✕
         </button>
       </div>
       {priceLookup.summary && (
-        <p className="mb-3 text-sm text-stone-600">{priceLookup.summary}</p>
+        <p className="mb-3 text-sm text-fg-muted">{priceLookup.summary}</p>
       )}
       <div className="flex flex-col gap-3">
         {priceLookup.stores.map((store) => {
@@ -76,7 +76,7 @@ export function PriceLookupCard({
           return (
             <div key={store.storeId}>
               <div className="flex flex-wrap items-center justify-between gap-x-2 gap-y-1">
-                <p className="min-w-0 flex-1 truncate text-sm font-medium text-stone-900">
+                <p className="min-w-0 flex-1 truncate text-sm font-medium text-fg">
                   {store.storeName}
                 </p>
                 {lookupProduct && (
@@ -100,7 +100,7 @@ export function PriceLookupCard({
                       className={`rounded-lg p-1.5 transition disabled:opacity-50 ${
                         onList
                           ? "bg-brand-50 text-brand-600"
-                          : "text-stone-400 hover:bg-stone-100 hover:text-brand-600"
+                          : "text-fg-subtle hover:bg-surface-muted hover:text-brand-600"
                       }`}
                     >
                       <ListAddIcon className="h-4 w-4" />
@@ -116,7 +116,7 @@ export function PriceLookupCard({
                 )}
               </div>
               {storeProduct?.notes && (
-                <p className="mt-0.5 text-xs text-stone-500">{storeProduct.notes}</p>
+                <p className="mt-0.5 text-xs text-fg-muted">{storeProduct.notes}</p>
               )}
               {storeProduct?.sourceUrl && (
                 <div className="mt-1">

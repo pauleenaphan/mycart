@@ -26,7 +26,7 @@ function NavItem({ label, active, onClick, children }: NavItemProps) {
       className={`flex min-h-10 flex-1 flex-col items-center justify-center gap-0.5 rounded-xl py-1 transition sm:min-h-14 sm:gap-1 sm:rounded-2xl sm:py-2 ${
         active
           ? "bg-brand-50 text-brand-700"
-          : "text-stone-400 hover:text-stone-600"
+          : "text-fg-subtle hover:text-fg-muted"
       }`}
     >
       {children}
@@ -96,7 +96,7 @@ export function AppNav({ activeTab, onChange }: AppNavProps) {
       aria-label="Main"
       className="fixed inset-x-0 bottom-0 z-30 px-3 pt-1 pb-[max(0.5rem,var(--spacing-safe-bottom))] sm:px-4 sm:pt-2 sm:pb-[max(1rem,var(--spacing-safe-bottom))]"
     >
-      <div className="mx-auto flex w-full max-w-lg gap-0.5 rounded-xl border border-stone-200/80 bg-white/95 p-1 shadow-lg shadow-stone-900/5 backdrop-blur-md sm:gap-1 sm:rounded-2xl sm:p-1.5">
+      <div className="mx-auto flex w-full max-w-lg gap-0.5 rounded-xl border border-edge/80 bg-surface/95 p-1 shadow-lg shadow-black/10 backdrop-blur-md sm:gap-1 sm:rounded-2xl sm:p-1.5">
         <NavItem
           label="List"
           active={activeTab === "list"}

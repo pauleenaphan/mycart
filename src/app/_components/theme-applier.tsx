@@ -2,13 +2,20 @@
 
 import { useEffect } from "react";
 
+import { applyAppearance, storeDarkMode } from "~/types/appearance";
 import { type ThemeColor } from "~/types/theme";
 
-export function ThemeApplier({ themeColor }: { themeColor: ThemeColor }) {
+type ThemeApplierProps = {
+  themeColor: ThemeColor;
+  darkMode: boolean;
+};
+
+export function ThemeApplier({ themeColor, darkMode }: ThemeApplierProps) {
   useEffect(() => {
     document.documentElement.dataset.theme = themeColor;
-    document.body.style.backgroundColor = "var(--color-canvas)";
-  }, [themeColor]);
+    applyAppearance(darkMode);
+    storeDarkMode(darkMode);
+  }, [themeColor, darkMode]);
 
   return null;
 }

@@ -54,6 +54,7 @@ model User {
   useGeminiPrices         Boolean               @default(true)
   collapseCompletedStores Boolean               @default(false)
   isGuest                 Boolean               @default(false)
+  darkMode                Boolean               @default(false)
   themeColor              String                @default("pink")
   accounts                Account[]
   sessions                Session[]

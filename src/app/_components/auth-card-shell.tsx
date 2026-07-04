@@ -19,7 +19,7 @@ export function AuthCardShell({ subtitle, children }: AuthCardShellProps) {
           <h1 className="mt-4 text-2xl sm:mt-5 sm:text-3xl">
             <BrandName />
           </h1>
-          <p className="mt-2 text-sm text-stone-500">{subtitle}</p>
+          <p className="mt-2 text-sm text-fg-muted">{subtitle}</p>
         </div>
         {children}
       </div>

@@ -73,13 +73,13 @@ export function PlaceAutocomplete({
         className="app-input px-3 py-2.5"
         autoFocus
       />
-      <p className="text-xs text-stone-500">
+      <p className="text-xs text-fg-muted">
         Start typing to search Google Maps for grocery stores and shops.
       </p>
       <button
         type="button"
         onClick={onCancel}
-        className="self-end text-sm text-stone-500 transition hover:text-stone-700"
+        className="self-end text-sm text-fg-muted transition hover:text-fg"
       >
         Cancel
       </button>

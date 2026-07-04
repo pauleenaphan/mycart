@@ -58,6 +58,7 @@ async function getUserProfile(
     useGeminiPrices: user.useGeminiPrices,
     collapseCompletedStores: user.collapseCompletedStores,
     isGuest: user.isGuest,
+    darkMode: user.darkMode,
     themeColor: isThemeColor(user.themeColor) ? user.themeColor : "pink",
     stores: user.stores,
     shoppingList: user.shoppingListItems,
@@ -111,6 +112,12 @@ export const userRouter = createTRPCRouter({
     .input(z.object({ themeColor: z.enum(THEME_COLORS) }))
     .mutation(({ ctx, input }) =>
       updateUserProfile(ctx, { themeColor: input.themeColor }),
+    ),
+
+  setDarkMode: protectedProcedure
+    .input(z.object({ darkMode: z.boolean() }))
+    .mutation(({ ctx, input }) =>
+      updateUserProfile(ctx, { darkMode: input.darkMode }),
     ),
 
   addStore: protectedProcedure

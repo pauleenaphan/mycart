@@ -36,6 +36,7 @@ export type UserProfile = {
   useGeminiPrices: boolean;
   collapseCompletedStores: boolean;
   isGuest: boolean;
+  darkMode: boolean;
   themeColor: ThemeColor;
   stores: Store[];
   shoppingList: ShoppingListItem[];

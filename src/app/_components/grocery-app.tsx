@@ -18,7 +18,7 @@ export function GroceryApp() {
     return (
       <div className="flex min-h-[100dvh] flex-col">
         <AppHeader />
-        <p className="flex flex-1 items-center justify-center text-stone-500">
+        <p className="flex flex-1 items-center justify-center text-fg-muted">
           Loading your list...
         </p>
       </div>
@@ -38,7 +38,7 @@ export function GroceryApp() {
 
   return (
     <div className="flex min-h-[100dvh] flex-col">
-      <ThemeApplier themeColor={user.themeColor} />
+      <ThemeApplier themeColor={user.themeColor} darkMode={user.darkMode} />
       <AppHeader />
       <main className="app-shell-main flex-1">
         {activeTab === "list" && <GroceryList user={user} />}

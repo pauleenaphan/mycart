@@ -183,7 +183,7 @@ export function GroceryList({ user }: GroceryListProps) {
 
   return (
     <>
-      <header className="list-search-header z-10 overflow-visible border-b border-stone-200/80 bg-canvas/90 py-2.5 sm:py-4 md:sticky md:top-[calc(3.25rem+var(--spacing-safe-top))] md:backdrop-blur-md">
+      <header className="list-search-header z-10 overflow-visible border-b border-edge/80 bg-canvas/90 py-2.5 sm:py-4 md:sticky md:top-[calc(3.25rem+var(--spacing-safe-top))] md:backdrop-blur-md">
         <form
           className="relative mx-auto w-full max-w-lg px-4"
           ref={containerRef}
@@ -194,7 +194,7 @@ export function GroceryList({ user }: GroceryListProps) {
         >
           <div className="flex flex-col gap-2">
             {showStorePicker && user.stores.length === 0 && (
-              <p className="text-sm text-stone-500">
+              <p className="text-sm text-fg-muted">
                 Add a store in the Stores tab to categorize items.
               </p>
             )}
@@ -227,7 +227,7 @@ export function GroceryList({ user }: GroceryListProps) {
                   disabled={isClearing}
                   title="Clear all — removes every item from all stores"
                   aria-label="Clear all — removes every item from all stores"
-                  className="text-sm text-stone-500 transition hover:text-red-500 disabled:opacity-50"
+                  className="text-sm text-fg-muted transition hover:text-red-500 disabled:opacity-50"
                 >
                   {clearAll.isPending ? "…" : "Clear all"}
                 </button>
@@ -304,7 +304,7 @@ export function GroceryList({ user }: GroceryListProps) {
         )}
 
         {user.shoppingList.length === 0 ? (
-          <p className="pt-12 text-center text-stone-400">
+          <p className="pt-12 text-center text-fg-subtle">
             Your list is empty. Search for a product above to get started.
           </p>
         ) : (
