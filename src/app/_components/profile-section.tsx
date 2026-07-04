@@ -1,7 +1,9 @@
 "use client";
 
 import { signOutFromApp } from "~/server/auth/actions";
+import { CheckIcon } from "~/app/_components/icons";
 import { SettingsToggle } from "~/app/_components/settings-toggle";
+import { useProfileCache } from "~/hooks/use-profile-cache";
 import { api } from "~/trpc/react";
 import { THEME_OPTIONS } from "~/types/theme";
 import { type UserProfile } from "~/types/user";
@@ -11,28 +13,17 @@ type ProfileSectionProps = {
 };
 
 export function ProfileSection({ user }: ProfileSectionProps) {
-  const utils = api.useUtils();
-
-  const setUser = (data: UserProfile) => {
-    utils.user.getProfile.setData(undefined, data);
-  };
+  const { setUser } = useProfileCache();
 
   const setClearOnCheck = api.user.setClearOnCheck.useMutation({
     onSuccess: setUser,
   });
-
   const setUseGeminiPrices = api.user.setUseGeminiPrices.useMutation({
     onSuccess: setUser,
   });
-
   const setCollapseCompletedStores =
-    api.user.setCollapseCompletedStores.useMutation({
-      onSuccess: setUser,
-    });
-
-  const setThemeColor = api.user.setThemeColor.useMutation({
-    onSuccess: setUser,
-  });
+    api.user.setCollapseCompletedStores.useMutation({ onSuccess: setUser });
+  const setThemeColor = api.user.setThemeColor.useMutation({ onSuccess: setUser });
 
   return (
     <div className="mx-auto w-full max-w-lg px-4 py-5 sm:py-6">
@@ -92,18 +83,7 @@ export function ProfileSection({ user }: ProfileSectionProps) {
                     }`}
                     style={{ backgroundColor: theme.swatch }}
                   >
-                    {selected && (
-                      <svg
-                        viewBox="0 0 12 12"
-                        className="h-4 w-4 text-white"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        aria-hidden
-                      >
-                        <path d="M2 6l3 3 5-5" strokeLinecap="round" />
-                      </svg>
-                    )}
+                    {selected && <CheckIcon className="h-4 w-4 text-white" />}
                   </span>
                   <span
                     className={`text-xs ${

@@ -1,5 +1,7 @@
 import { type ReactNode } from "react";
 
+import { StorePinIcon } from "~/app/_components/icons";
+
 type AppTab = "list" | "stores" | "profile";
 
 type AppNavProps = {
@@ -56,21 +58,10 @@ function ListIcon({ active }: { active: boolean }) {
 
 function StoreIcon({ active }: { active: boolean }) {
   return (
-    <svg
-      viewBox="0 0 24 24"
+    <StorePinIcon
       className="h-6 w-6"
-      fill="none"
-      stroke="currentColor"
       strokeWidth={active ? 2.25 : 1.75}
-      aria-hidden
-    >
-      <path
-        d="M12 21s7-5.5 7-12a7 7 0 1 0-14 0c0 6.5 7 12 7 12z"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-      <circle cx="12" cy="9" r="2.5" />
-    </svg>
+    />
   );
 }
 

@@ -3,6 +3,7 @@
 import { useState } from "react";
 
 import { PlaceAutocomplete } from "~/app/_components/stores/place-autocomplete";
+import { useProfileCache } from "~/hooks/use-profile-cache";
 import { api } from "~/trpc/react";
 import { type UserProfile } from "~/types/user";
 
@@ -13,11 +14,7 @@ type StoresSectionProps = {
 export function StoresSection({ user }: StoresSectionProps) {
   const [showAddStore, setShowAddStore] = useState(false);
   const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY;
-  const utils = api.useUtils();
-
-  const setUser = (data: UserProfile) => {
-    utils.user.getProfile.setData(undefined, data);
-  };
+  const { setUser } = useProfileCache();
 
   const addStore = api.user.addStore.useMutation({
     onSuccess: (data) => {

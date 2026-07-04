@@ -64,6 +64,23 @@ async function getUserProfile(
   };
 }
 
+type MutationContext = {
+  db: typeof db;
+  session: { user: { id: string } };
+};
+
+async function updateUserProfile(
+  ctx: MutationContext,
+  data: Parameters<typeof db.user.update>[0]["data"],
+) {
+  await ctx.db.user.update({
+    where: { id: ctx.session.user.id },
+    data,
+  });
+
+  return getUserProfile(ctx.db, ctx.session.user.id);
+}
+
 export const userRouter = createTRPCRouter({
   getProfile: protectedProcedure.query(async ({ ctx }) => {
     return getUserProfile(ctx.db, ctx.session.user.id);
@@ -71,47 +88,29 @@ export const userRouter = createTRPCRouter({
 
   setClearOnCheck: protectedProcedure
     .input(z.object({ clearOnCheck: z.boolean() }))
-    .mutation(async ({ ctx, input }) => {
-      await ctx.db.user.update({
-        where: { id: ctx.session.user.id },
-        data: { clearOnCheck: input.clearOnCheck },
-      });
-
-      return getUserProfile(ctx.db, ctx.session.user.id);
-    }),
+    .mutation(({ ctx, input }) =>
+      updateUserProfile(ctx, { clearOnCheck: input.clearOnCheck }),
+    ),
 
   setUseGeminiPrices: protectedProcedure
     .input(z.object({ useGeminiPrices: z.boolean() }))
-    .mutation(async ({ ctx, input }) => {
-      await ctx.db.user.update({
-        where: { id: ctx.session.user.id },
-        data: { useGeminiPrices: input.useGeminiPrices },
-      });
-
-      return getUserProfile(ctx.db, ctx.session.user.id);
-    }),
+    .mutation(({ ctx, input }) =>
+      updateUserProfile(ctx, { useGeminiPrices: input.useGeminiPrices }),
+    ),
 
   setCollapseCompletedStores: protectedProcedure
     .input(z.object({ collapseCompletedStores: z.boolean() }))
-    .mutation(async ({ ctx, input }) => {
-      await ctx.db.user.update({
-        where: { id: ctx.session.user.id },
-        data: { collapseCompletedStores: input.collapseCompletedStores },
-      });
-
-      return getUserProfile(ctx.db, ctx.session.user.id);
-    }),
+    .mutation(({ ctx, input }) =>
+      updateUserProfile(ctx, {
+        collapseCompletedStores: input.collapseCompletedStores,
+      }),
+    ),
 
   setThemeColor: protectedProcedure
     .input(z.object({ themeColor: z.enum(THEME_COLORS) }))
-    .mutation(async ({ ctx, input }) => {
-      await ctx.db.user.update({
-        where: { id: ctx.session.user.id },
-        data: { themeColor: input.themeColor },
-      });
-
-      return getUserProfile(ctx.db, ctx.session.user.id);
-    }),
+    .mutation(({ ctx, input }) =>
+      updateUserProfile(ctx, { themeColor: input.themeColor }),
+    ),
 
   addStore: protectedProcedure
     .input(storeInput)
@@ -365,60 +364,4 @@ export const userRouter = createTRPCRouter({
       return getUserProfile(ctx.db, ctx.session.user.id);
     }),
 
-  addFavoriteItem: protectedProcedure
-    .input(z.object({ text: z.string().min(1) }))
-    .mutation(async ({ ctx, input }) => {
-      const text = input.text.trim();
-
-      await ctx.db.favoriteGroceryItem.upsert({
-        where: {
-          userId_text: {
-            userId: ctx.session.user.id,
-            text,
-          },
-        },
-        create: {
-          userId: ctx.session.user.id,
-          text,
-        },
-        update: {},
-      });
-
-      return getUserProfile(ctx.db, ctx.session.user.id);
-    }),
-
-  removeFavoriteItem: protectedProcedure
-    .input(z.object({ id: z.string() }))
-    .mutation(async ({ ctx, input }) => {
-      await ctx.db.favoriteGroceryItem.deleteMany({
-        where: { id: input.id, userId: ctx.session.user.id },
-      });
-
-      return getUserProfile(ctx.db, ctx.session.user.id);
-    }),
-
-  addFavoriteToShoppingList: protectedProcedure
-    .input(z.object({ id: z.string() }))
-    .mutation(async ({ ctx, input }) => {
-      const favorite = await ctx.db.favoriteGroceryItem.findFirst({
-        where: { id: input.id, userId: ctx.session.user.id },
-      });
-
-      if (!favorite) {
-        throw new TRPCError({ code: "NOT_FOUND" });
-      }
-
-      await ensureShoppingListItem(
-        ctx.db,
-        ctx.session.user.id,
-        (
-          await ctx.db.product.create({
-            data: { name: favorite.text },
-          })
-        ).id,
-        null,
-      );
-
-      return getUserProfile(ctx.db, ctx.session.user.id);
-    }),
 });

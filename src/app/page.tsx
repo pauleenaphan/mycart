@@ -1,5 +1,5 @@
 import { GroceryApp } from "~/app/_components/grocery-app";
-import { LoginScreen } from "~/app/_components/login-screen";
+import { SignInCard } from "~/app/_components/sign-in-card";
 import { auth } from "~/server/auth";
 
 export default async function Home() {
@@ -7,7 +7,7 @@ export default async function Home() {
 
   return (
     <div className="min-h-[100dvh]">
-      {session?.user ? <GroceryApp /> : <LoginScreen />}
+      {session?.user ? <GroceryApp /> : <SignInCard />}
     </div>
   );
 }
