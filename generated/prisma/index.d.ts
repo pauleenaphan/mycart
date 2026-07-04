@@ -3884,6 +3884,8 @@ export namespace Prisma {
     emailVerified: Date | null
     image: string | null
     clearOnCheck: boolean | null
+    useGeminiPrices: boolean | null
+    collapseCompletedStores: boolean | null
     themeColor: string | null
   }
 
@@ -3894,6 +3896,8 @@ export namespace Prisma {
     emailVerified: Date | null
     image: string | null
     clearOnCheck: boolean | null
+    useGeminiPrices: boolean | null
+    collapseCompletedStores: boolean | null
     themeColor: string | null
   }
 
@@ -3904,6 +3908,8 @@ export namespace Prisma {
     emailVerified: number
     image: number
     clearOnCheck: number
+    useGeminiPrices: number
+    collapseCompletedStores: number
     themeColor: number
     _all: number
   }
@@ -3916,6 +3922,8 @@ export namespace Prisma {
     emailVerified?: true
     image?: true
     clearOnCheck?: true
+    useGeminiPrices?: true
+    collapseCompletedStores?: true
     themeColor?: true
   }
 
@@ -3926,6 +3934,8 @@ export namespace Prisma {
     emailVerified?: true
     image?: true
     clearOnCheck?: true
+    useGeminiPrices?: true
+    collapseCompletedStores?: true
     themeColor?: true
   }
 
@@ -3936,6 +3946,8 @@ export namespace Prisma {
     emailVerified?: true
     image?: true
     clearOnCheck?: true
+    useGeminiPrices?: true
+    collapseCompletedStores?: true
     themeColor?: true
     _all?: true
   }
@@ -4019,6 +4031,8 @@ export namespace Prisma {
     emailVerified: Date | null
     image: string | null
     clearOnCheck: boolean
+    useGeminiPrices: boolean
+    collapseCompletedStores: boolean
     themeColor: string
     _count: UserCountAggregateOutputType | null
     _min: UserMinAggregateOutputType | null
@@ -4046,6 +4060,8 @@ export namespace Prisma {
     emailVerified?: boolean
     image?: boolean
     clearOnCheck?: boolean
+    useGeminiPrices?: boolean
+    collapseCompletedStores?: boolean
     themeColor?: boolean
     accounts?: boolean | User$accountsArgs<ExtArgs>
     sessions?: boolean | User$sessionsArgs<ExtArgs>
@@ -4062,6 +4078,8 @@ export namespace Prisma {
     emailVerified?: boolean
     image?: boolean
     clearOnCheck?: boolean
+    useGeminiPrices?: boolean
+    collapseCompletedStores?: boolean
     themeColor?: boolean
   }, ExtArgs["result"]["user"]>
 
@@ -4072,6 +4090,8 @@ export namespace Prisma {
     emailVerified?: boolean
     image?: boolean
     clearOnCheck?: boolean
+    useGeminiPrices?: boolean
+    collapseCompletedStores?: boolean
     themeColor?: boolean
   }, ExtArgs["result"]["user"]>
 
@@ -4082,10 +4102,12 @@ export namespace Prisma {
     emailVerified?: boolean
     image?: boolean
     clearOnCheck?: boolean
+    useGeminiPrices?: boolean
+    collapseCompletedStores?: boolean
     themeColor?: boolean
   }
 
-  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "email" | "emailVerified" | "image" | "clearOnCheck" | "themeColor", ExtArgs["result"]["user"]>
+  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "email" | "emailVerified" | "image" | "clearOnCheck" | "useGeminiPrices" | "collapseCompletedStores" | "themeColor", ExtArgs["result"]["user"]>
   export type UserInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     accounts?: boolean | User$accountsArgs<ExtArgs>
     sessions?: boolean | User$sessionsArgs<ExtArgs>
@@ -4113,6 +4135,8 @@ export namespace Prisma {
       emailVerified: Date | null
       image: string | null
       clearOnCheck: boolean
+      useGeminiPrices: boolean
+      collapseCompletedStores: boolean
       themeColor: string
     }, ExtArgs["result"]["user"]>
     composites: {}
@@ -4548,6 +4572,8 @@ export namespace Prisma {
     readonly emailVerified: FieldRef<"User", 'DateTime'>
     readonly image: FieldRef<"User", 'String'>
     readonly clearOnCheck: FieldRef<"User", 'Boolean'>
+    readonly useGeminiPrices: FieldRef<"User", 'Boolean'>
+    readonly collapseCompletedStores: FieldRef<"User", 'Boolean'>
     readonly themeColor: FieldRef<"User", 'String'>
   }
     
@@ -10426,6 +10452,8 @@ export namespace Prisma {
     emailVerified: 'emailVerified',
     image: 'image',
     clearOnCheck: 'clearOnCheck',
+    useGeminiPrices: 'useGeminiPrices',
+    collapseCompletedStores: 'collapseCompletedStores',
     themeColor: 'themeColor'
   };
 
@@ -10702,6 +10730,8 @@ export namespace Prisma {
     emailVerified?: DateTimeNullableFilter<"User"> | Date | string | null
     image?: StringNullableFilter<"User"> | string | null
     clearOnCheck?: BoolFilter<"User"> | boolean
+    useGeminiPrices?: BoolFilter<"User"> | boolean
+    collapseCompletedStores?: BoolFilter<"User"> | boolean
     themeColor?: StringFilter<"User"> | string
     accounts?: AccountListRelationFilter
     sessions?: SessionListRelationFilter
@@ -10717,6 +10747,8 @@ export namespace Prisma {
     emailVerified?: SortOrderInput | SortOrder
     image?: SortOrderInput | SortOrder
     clearOnCheck?: SortOrder
+    useGeminiPrices?: SortOrder
+    collapseCompletedStores?: SortOrder
     themeColor?: SortOrder
     accounts?: AccountOrderByRelationAggregateInput
     sessions?: SessionOrderByRelationAggregateInput
@@ -10735,6 +10767,8 @@ export namespace Prisma {
     emailVerified?: DateTimeNullableFilter<"User"> | Date | string | null
     image?: StringNullableFilter<"User"> | string | null
     clearOnCheck?: BoolFilter<"User"> | boolean
+    useGeminiPrices?: BoolFilter<"User"> | boolean
+    collapseCompletedStores?: BoolFilter<"User"> | boolean
     themeColor?: StringFilter<"User"> | string
     accounts?: AccountListRelationFilter
     sessions?: SessionListRelationFilter
@@ -10750,6 +10784,8 @@ export namespace Prisma {
     emailVerified?: SortOrderInput | SortOrder
     image?: SortOrderInput | SortOrder
     clearOnCheck?: SortOrder
+    useGeminiPrices?: SortOrder
+    collapseCompletedStores?: SortOrder
     themeColor?: SortOrder
     _count?: UserCountOrderByAggregateInput
     _max?: UserMaxOrderByAggregateInput
@@ -10766,6 +10802,8 @@ export namespace Prisma {
     emailVerified?: DateTimeNullableWithAggregatesFilter<"User"> | Date | string | null
     image?: StringNullableWithAggregatesFilter<"User"> | string | null
     clearOnCheck?: BoolWithAggregatesFilter<"User"> | boolean
+    useGeminiPrices?: BoolWithAggregatesFilter<"User"> | boolean
+    collapseCompletedStores?: BoolWithAggregatesFilter<"User"> | boolean
     themeColor?: StringWithAggregatesFilter<"User"> | string
   }
 
@@ -11211,6 +11249,8 @@ export namespace Prisma {
     emailVerified?: Date | string | null
     image?: string | null
     clearOnCheck?: boolean
+    useGeminiPrices?: boolean
+    collapseCompletedStores?: boolean
     themeColor?: string
     accounts?: AccountCreateNestedManyWithoutUserInput
     sessions?: SessionCreateNestedManyWithoutUserInput
@@ -11226,6 +11266,8 @@ export namespace Prisma {
     emailVerified?: Date | string | null
     image?: string | null
     clearOnCheck?: boolean
+    useGeminiPrices?: boolean
+    collapseCompletedStores?: boolean
     themeColor?: string
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
@@ -11241,6 +11283,8 @@ export namespace Prisma {
     emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
     clearOnCheck?: BoolFieldUpdateOperationsInput | boolean
+    useGeminiPrices?: BoolFieldUpdateOperationsInput | boolean
+    collapseCompletedStores?: BoolFieldUpdateOperationsInput | boolean
     themeColor?: StringFieldUpdateOperationsInput | string
     accounts?: AccountUpdateManyWithoutUserNestedInput
     sessions?: SessionUpdateManyWithoutUserNestedInput
@@ -11256,6 +11300,8 @@ export namespace Prisma {
     emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
     clearOnCheck?: BoolFieldUpdateOperationsInput | boolean
+    useGeminiPrices?: BoolFieldUpdateOperationsInput | boolean
+    collapseCompletedStores?: BoolFieldUpdateOperationsInput | boolean
     themeColor?: StringFieldUpdateOperationsInput | string
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
@@ -11271,6 +11317,8 @@ export namespace Prisma {
     emailVerified?: Date | string | null
     image?: string | null
     clearOnCheck?: boolean
+    useGeminiPrices?: boolean
+    collapseCompletedStores?: boolean
     themeColor?: string
   }
 
@@ -11281,6 +11329,8 @@ export namespace Prisma {
     emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
     clearOnCheck?: BoolFieldUpdateOperationsInput | boolean
+    useGeminiPrices?: BoolFieldUpdateOperationsInput | boolean
+    collapseCompletedStores?: BoolFieldUpdateOperationsInput | boolean
     themeColor?: StringFieldUpdateOperationsInput | string
   }
 
@@ -11291,6 +11341,8 @@ export namespace Prisma {
     emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
     clearOnCheck?: BoolFieldUpdateOperationsInput | boolean
+    useGeminiPrices?: BoolFieldUpdateOperationsInput | boolean
+    collapseCompletedStores?: BoolFieldUpdateOperationsInput | boolean
     themeColor?: StringFieldUpdateOperationsInput | string
   }
 
@@ -11844,6 +11896,8 @@ export namespace Prisma {
     emailVerified?: SortOrder
     image?: SortOrder
     clearOnCheck?: SortOrder
+    useGeminiPrices?: SortOrder
+    collapseCompletedStores?: SortOrder
     themeColor?: SortOrder
   }
 
@@ -11854,6 +11908,8 @@ export namespace Prisma {
     emailVerified?: SortOrder
     image?: SortOrder
     clearOnCheck?: SortOrder
+    useGeminiPrices?: SortOrder
+    collapseCompletedStores?: SortOrder
     themeColor?: SortOrder
   }
 
@@ -11864,6 +11920,8 @@ export namespace Prisma {
     emailVerified?: SortOrder
     image?: SortOrder
     clearOnCheck?: SortOrder
+    useGeminiPrices?: SortOrder
+    collapseCompletedStores?: SortOrder
     themeColor?: SortOrder
   }
 
@@ -12703,6 +12761,8 @@ export namespace Prisma {
     emailVerified?: Date | string | null
     image?: string | null
     clearOnCheck?: boolean
+    useGeminiPrices?: boolean
+    collapseCompletedStores?: boolean
     themeColor?: string
     sessions?: SessionCreateNestedManyWithoutUserInput
     stores?: StoreCreateNestedManyWithoutUserInput
@@ -12717,6 +12777,8 @@ export namespace Prisma {
     emailVerified?: Date | string | null
     image?: string | null
     clearOnCheck?: boolean
+    useGeminiPrices?: boolean
+    collapseCompletedStores?: boolean
     themeColor?: string
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
     stores?: StoreUncheckedCreateNestedManyWithoutUserInput
@@ -12747,6 +12809,8 @@ export namespace Prisma {
     emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
     clearOnCheck?: BoolFieldUpdateOperationsInput | boolean
+    useGeminiPrices?: BoolFieldUpdateOperationsInput | boolean
+    collapseCompletedStores?: BoolFieldUpdateOperationsInput | boolean
     themeColor?: StringFieldUpdateOperationsInput | string
     sessions?: SessionUpdateManyWithoutUserNestedInput
     stores?: StoreUpdateManyWithoutUserNestedInput
@@ -12761,6 +12825,8 @@ export namespace Prisma {
     emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
     clearOnCheck?: BoolFieldUpdateOperationsInput | boolean
+    useGeminiPrices?: BoolFieldUpdateOperationsInput | boolean
+    collapseCompletedStores?: BoolFieldUpdateOperationsInput | boolean
     themeColor?: StringFieldUpdateOperationsInput | string
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
     stores?: StoreUncheckedUpdateManyWithoutUserNestedInput
@@ -12775,6 +12841,8 @@ export namespace Prisma {
     emailVerified?: Date | string | null
     image?: string | null
     clearOnCheck?: boolean
+    useGeminiPrices?: boolean
+    collapseCompletedStores?: boolean
     themeColor?: string
     accounts?: AccountCreateNestedManyWithoutUserInput
     stores?: StoreCreateNestedManyWithoutUserInput
@@ -12789,6 +12857,8 @@ export namespace Prisma {
     emailVerified?: Date | string | null
     image?: string | null
     clearOnCheck?: boolean
+    useGeminiPrices?: boolean
+    collapseCompletedStores?: boolean
     themeColor?: string
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
     stores?: StoreUncheckedCreateNestedManyWithoutUserInput
@@ -12819,6 +12889,8 @@ export namespace Prisma {
     emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
     clearOnCheck?: BoolFieldUpdateOperationsInput | boolean
+    useGeminiPrices?: BoolFieldUpdateOperationsInput | boolean
+    collapseCompletedStores?: BoolFieldUpdateOperationsInput | boolean
     themeColor?: StringFieldUpdateOperationsInput | string
     accounts?: AccountUpdateManyWithoutUserNestedInput
     stores?: StoreUpdateManyWithoutUserNestedInput
@@ -12833,6 +12905,8 @@ export namespace Prisma {
     emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
     clearOnCheck?: BoolFieldUpdateOperationsInput | boolean
+    useGeminiPrices?: BoolFieldUpdateOperationsInput | boolean
+    collapseCompletedStores?: BoolFieldUpdateOperationsInput | boolean
     themeColor?: StringFieldUpdateOperationsInput | string
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
     stores?: StoreUncheckedUpdateManyWithoutUserNestedInput
@@ -13129,6 +13203,8 @@ export namespace Prisma {
     emailVerified?: Date | string | null
     image?: string | null
     clearOnCheck?: boolean
+    useGeminiPrices?: boolean
+    collapseCompletedStores?: boolean
     themeColor?: string
     accounts?: AccountCreateNestedManyWithoutUserInput
     sessions?: SessionCreateNestedManyWithoutUserInput
@@ -13143,6 +13219,8 @@ export namespace Prisma {
     emailVerified?: Date | string | null
     image?: string | null
     clearOnCheck?: boolean
+    useGeminiPrices?: boolean
+    collapseCompletedStores?: boolean
     themeColor?: string
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
@@ -13198,6 +13276,8 @@ export namespace Prisma {
     emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
     clearOnCheck?: BoolFieldUpdateOperationsInput | boolean
+    useGeminiPrices?: BoolFieldUpdateOperationsInput | boolean
+    collapseCompletedStores?: BoolFieldUpdateOperationsInput | boolean
     themeColor?: StringFieldUpdateOperationsInput | string
     accounts?: AccountUpdateManyWithoutUserNestedInput
     sessions?: SessionUpdateManyWithoutUserNestedInput
@@ -13212,6 +13292,8 @@ export namespace Prisma {
     emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
     clearOnCheck?: BoolFieldUpdateOperationsInput | boolean
+    useGeminiPrices?: BoolFieldUpdateOperationsInput | boolean
+    collapseCompletedStores?: BoolFieldUpdateOperationsInput | boolean
     themeColor?: StringFieldUpdateOperationsInput | string
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
@@ -13242,6 +13324,8 @@ export namespace Prisma {
     emailVerified?: Date | string | null
     image?: string | null
     clearOnCheck?: boolean
+    useGeminiPrices?: boolean
+    collapseCompletedStores?: boolean
     themeColor?: string
     accounts?: AccountCreateNestedManyWithoutUserInput
     sessions?: SessionCreateNestedManyWithoutUserInput
@@ -13256,6 +13340,8 @@ export namespace Prisma {
     emailVerified?: Date | string | null
     image?: string | null
     clearOnCheck?: boolean
+    useGeminiPrices?: boolean
+    collapseCompletedStores?: boolean
     themeColor?: string
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
@@ -13328,6 +13414,8 @@ export namespace Prisma {
     emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
     clearOnCheck?: BoolFieldUpdateOperationsInput | boolean
+    useGeminiPrices?: BoolFieldUpdateOperationsInput | boolean
+    collapseCompletedStores?: BoolFieldUpdateOperationsInput | boolean
     themeColor?: StringFieldUpdateOperationsInput | string
     accounts?: AccountUpdateManyWithoutUserNestedInput
     sessions?: SessionUpdateManyWithoutUserNestedInput
@@ -13342,6 +13430,8 @@ export namespace Prisma {
     emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
     clearOnCheck?: BoolFieldUpdateOperationsInput | boolean
+    useGeminiPrices?: BoolFieldUpdateOperationsInput | boolean
+    collapseCompletedStores?: BoolFieldUpdateOperationsInput | boolean
     themeColor?: StringFieldUpdateOperationsInput | string
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput
@@ -13451,6 +13541,8 @@ export namespace Prisma {
     emailVerified?: Date | string | null
     image?: string | null
     clearOnCheck?: boolean
+    useGeminiPrices?: boolean
+    collapseCompletedStores?: boolean
     themeColor?: string
     accounts?: AccountCreateNestedManyWithoutUserInput
     sessions?: SessionCreateNestedManyWithoutUserInput
@@ -13465,6 +13557,8 @@ export namespace Prisma {
     emailVerified?: Date | string | null
     image?: string | null
     clearOnCheck?: boolean
+    useGeminiPrices?: boolean
+    collapseCompletedStores?: boolean
     themeColor?: string
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
     sessions?: SessionUncheckedCreateNestedManyWithoutUserInput
@@ -13495,6 +13589,8 @@ export namespace Prisma {
     emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
     clearOnCheck?: BoolFieldUpdateOperationsInput | boolean
+    useGeminiPrices?: BoolFieldUpdateOperationsInput | boolean
+    collapseCompletedStores?: BoolFieldUpdateOperationsInput | boolean
     themeColor?: StringFieldUpdateOperationsInput | string
     accounts?: AccountUpdateManyWithoutUserNestedInput
     sessions?: SessionUpdateManyWithoutUserNestedInput
@@ -13509,6 +13605,8 @@ export namespace Prisma {
     emailVerified?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     image?: NullableStringFieldUpdateOperationsInput | string | null
     clearOnCheck?: BoolFieldUpdateOperationsInput | boolean
+    useGeminiPrices?: BoolFieldUpdateOperationsInput | boolean
+    collapseCompletedStores?: BoolFieldUpdateOperationsInput | boolean
     themeColor?: StringFieldUpdateOperationsInput | string
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
     sessions?: SessionUncheckedUpdateManyWithoutUserNestedInput

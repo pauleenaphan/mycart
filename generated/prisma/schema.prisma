@@ -44,18 +44,20 @@ model Session {
 }
 
 model User {
-  id                String                @id @default(cuid())
-  name              String?
-  email             String?               @unique
-  emailVerified     DateTime?
-  image             String?
-  clearOnCheck      Boolean               @default(false)
-  themeColor        String                @default("pink")
-  accounts          Account[]
-  sessions          Session[]
-  stores            Store[]
-  shoppingListItems ShoppingListItem[]
-  favoriteItems     FavoriteGroceryItem[]
+  id                      String                @id @default(cuid())
+  name                    String?
+  email                   String?               @unique
+  emailVerified           DateTime?
+  image                   String?
+  clearOnCheck            Boolean               @default(false)
+  useGeminiPrices         Boolean               @default(true)
+  collapseCompletedStores Boolean               @default(false)
+  themeColor              String                @default("pink")
+  accounts                Account[]
+  sessions                Session[]
+  stores                  Store[]
+  shoppingListItems       ShoppingListItem[]
+  favoriteItems           FavoriteGroceryItem[]
 }
 
 model Store {
@@ -83,8 +85,6 @@ model ShoppingListItem {
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
   store     Store?   @relation(fields: [storeId], references: [id], onDelete: SetNull)
-
-  @@index([userId, productId, storeId])
 }
 
 model Product {

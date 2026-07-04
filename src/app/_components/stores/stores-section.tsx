@@ -31,17 +31,18 @@ export function StoresSection({ user }: StoresSectionProps) {
   });
 
   return (
-    <div className="mx-auto w-full max-w-lg px-4 py-6">
-      <div className="mb-6">
-        <div className="flex items-center justify-between gap-3">
-          <h1 className="page-title">Stores</h1>
+    <div className="mx-auto w-full max-w-lg px-4 py-5 sm:py-6">
+      <div className="mb-5 sm:mb-6">
+        <div className="flex items-start justify-between gap-3">
+          <h1 className="page-title min-w-0">Stores</h1>
           {!showAddStore && (
             <button
               type="button"
               onClick={() => setShowAddStore(true)}
               className="btn-secondary shrink-0 px-3 py-2 text-sm"
             >
-              + Add store
+              <span className="sm:hidden">+ Add</span>
+              <span className="hidden sm:inline">+ Add store</span>
             </button>
           )}
         </div>
@@ -117,7 +118,7 @@ export function StoresSection({ user }: StoresSectionProps) {
                 type="button"
                 onClick={() => removeStore.mutate({ id: store.id })}
                 disabled={removeStore.isPending}
-                className="shrink-0 text-stone-300 transition hover:text-red-400 disabled:opacity-50"
+                className="icon-btn shrink-0 -mr-2 text-stone-300 transition hover:text-red-400 disabled:opacity-50"
                 aria-label={`Remove ${store.name}`}
               >
                 ✕

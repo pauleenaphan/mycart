@@ -37,3 +37,8 @@ export type GroceryPriceLookupResult = {
   stores: GroceryStorePriceResult[];
   summary: string | null;
 };
+
+export type PriceLookupError = {
+  kind: "rate_limit" | "lookup_failed";
+  message: string;
+};

@@ -1,7 +1,7 @@
 "use client";
 
-import Link from "next/link";
-
+import { signOutFromApp } from "~/server/auth/actions";
+import { SettingsToggle } from "~/app/_components/settings-toggle";
 import { api } from "~/trpc/react";
 import { THEME_OPTIONS } from "~/types/theme";
 import { type UserProfile } from "~/types/user";
@@ -21,13 +21,22 @@ export function ProfileSection({ user }: ProfileSectionProps) {
     onSuccess: setUser,
   });
 
+  const setUseGeminiPrices = api.user.setUseGeminiPrices.useMutation({
+    onSuccess: setUser,
+  });
+
+  const setCollapseCompletedStores =
+    api.user.setCollapseCompletedStores.useMutation({
+      onSuccess: setUser,
+    });
+
   const setThemeColor = api.user.setThemeColor.useMutation({
     onSuccess: setUser,
   });
 
   return (
-    <div className="mx-auto w-full max-w-lg px-4 py-6">
-      <h1 className="page-title mb-6">Profile</h1>
+    <div className="mx-auto w-full max-w-lg px-4 py-5 sm:py-6">
+      <h1 className="page-title mb-5 sm:mb-6">Profile</h1>
 
       <div className="app-card mb-6 flex items-center gap-4 p-4">
         {user.image ? (
@@ -61,7 +70,7 @@ export function ProfileSection({ user }: ProfileSectionProps) {
           <p className="mb-4 text-sm text-stone-500">
             Choose an accent color for buttons, links, and highlights.
           </p>
-          <div className="grid grid-cols-4 gap-3">
+          <div className="grid grid-cols-4 gap-2 sm:gap-3">
             {THEME_OPTIONS.map((theme) => {
               const selected = user.themeColor === theme.id;
 
@@ -76,7 +85,7 @@ export function ProfileSection({ user }: ProfileSectionProps) {
                   aria-label={`${theme.label} theme`}
                 >
                   <span
-                    className={`flex h-11 w-11 items-center justify-center rounded-full transition ${
+                    className={`flex h-10 w-10 items-center justify-center rounded-full transition sm:h-11 sm:w-11 ${
                       selected
                         ? "ring-2 ring-offset-2 ring-stone-900"
                         : "ring-1 ring-stone-200"
@@ -116,40 +125,49 @@ export function ProfileSection({ user }: ProfileSectionProps) {
         <h2 className="border-b border-stone-100 px-4 py-3 text-xs font-semibold tracking-wider text-stone-500 uppercase">
           Settings
         </h2>
-        <label className="flex cursor-pointer items-center justify-between gap-4 px-4 py-4">
-          <div>
-            <p className="font-medium text-stone-900">Clear item when checked</p>
-            <p className="text-sm text-stone-500">
-              Remove items from your list after you check them off.
-            </p>
-          </div>
-          <button
-            type="button"
-            role="switch"
-            aria-checked={user.clearOnCheck}
-            disabled={setClearOnCheck.isPending}
-            onClick={() =>
-              setClearOnCheck.mutate({ clearOnCheck: !user.clearOnCheck })
-            }
-            className={`relative h-6 w-11 shrink-0 rounded-full transition ${
-              user.clearOnCheck ? "bg-brand-600" : "bg-stone-200"
-            }`}
-          >
-            <span
-              className={`absolute top-0.5 left-0.5 h-5 w-5 rounded-full bg-white shadow transition ${
-                user.clearOnCheck ? "translate-x-5" : "translate-x-0"
-              }`}
-            />
-          </button>
-        </label>
+        <SettingsToggle
+          checked={user.useGeminiPrices}
+          disabled={setUseGeminiPrices.isPending}
+          borderBottom
+          label="Gemini price lookup"
+          description="Search store websites for prices when you add new items."
+          onChange={() =>
+            setUseGeminiPrices.mutate({
+              useGeminiPrices: !user.useGeminiPrices,
+            })
+          }
+        />
+        <SettingsToggle
+          checked={user.clearOnCheck}
+          disabled={setClearOnCheck.isPending}
+          borderBottom
+          label="Clear item when checked"
+          description="Remove items from your list after you check them off."
+          onChange={() =>
+            setClearOnCheck.mutate({ clearOnCheck: !user.clearOnCheck })
+          }
+        />
+        <SettingsToggle
+          checked={user.collapseCompletedStores}
+          disabled={setCollapseCompletedStores.isPending}
+          label="Collapse completed stores"
+          description="When every item at a store is checked off, fold that section until you expand it."
+          onChange={() =>
+            setCollapseCompletedStores.mutate({
+              collapseCompletedStores: !user.collapseCompletedStores,
+            })
+          }
+        />
       </section>
 
-      <Link
-        href="/api/auth/signout"
-        className="app-card mt-6 block px-4 py-3 text-center text-sm font-medium text-red-600 transition hover:bg-red-50"
-      >
-        Sign out
-      </Link>
+      <form action={signOutFromApp} className="mt-6">
+        <button
+          type="submit"
+          className="app-card w-full px-4 py-3 text-center text-sm font-medium text-red-600 transition hover:bg-red-50"
+        >
+          Sign out
+        </button>
+      </form>
     </div>
   );
 }

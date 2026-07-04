@@ -2,6 +2,10 @@ import { z } from "zod";
 
 import { getGeminiClient, GEMINI_MODEL } from "~/server/gemini/client";
 import {
+  extractResponseText,
+  sleep,
+} from "~/server/gemini/extract-response-text";
+import {
   buildGroceryPriceLookupPrompt,
   GEMINI_GROCERY_SYSTEM_INSTRUCTION,
 } from "~/server/gemini/instructions";
@@ -10,6 +14,7 @@ import {
   resolveVerifiedProductSourceUrl,
 } from "~/server/gemini/source-url";
 import { isOfficialStoreUrl } from "~/server/gemini/official-website";
+import { normalizeStoreSourceUrl } from "~/server/gemini/store-search";
 import {
   type GroceryPriceLookupInput,
   type GroceryPriceLookupResult,
@@ -92,7 +97,11 @@ async function verifyAndResolveSources(
             isOfficialStoreUrl(product.sourceUrl, officialWebsite);
 
           const trustedModelUrl = hasOfficialSource
-            ? (product.sourceUrl ?? null)
+            ? normalizeStoreSourceUrl(
+                product.sourceUrl,
+                officialWebsite,
+                product.productName,
+              )
             : null;
 
           const normalized = normalizeProductResult({
@@ -114,12 +123,17 @@ async function verifyAndResolveSources(
             groundingSources,
           });
 
+          const hasOfficialPrice =
+            normalized.found &&
+            normalized.price != null &&
+            hasOfficialSource;
+
           const notes = [
             product.sourceUrl && !trustedModelUrl
               ? "Gemini returned a non-official source; showing a verified store link instead."
               : null,
             normalized.notes,
-            verified.notesAppend,
+            hasOfficialPrice ? null : verified.notesAppend,
           ]
             .filter(Boolean)
             .join(" ")
@@ -127,13 +141,16 @@ async function verifyAndResolveSources(
 
           return {
             ...normalized,
-            found: normalized.found && verified.verifiedProductPage,
-            price:
-              normalized.found && verified.verifiedProductPage
-                ? normalized.price
-                : null,
-            sourceUrl: verified.sourceUrl,
-            sourceTitle: verified.sourceTitle,
+            found: hasOfficialPrice,
+            price: hasOfficialPrice ? normalized.price : null,
+            sourceUrl: normalizeStoreSourceUrl(
+              trustedModelUrl ?? verified.sourceUrl,
+              officialWebsite,
+              product.productName,
+            ),
+            sourceTitle:
+              (trustedModelUrl ? normalized.sourceTitle : verified.sourceTitle) ??
+              normalized.sourceTitle,
             notes: notes || normalized.notes,
           };
         }),
@@ -152,6 +169,53 @@ async function verifyAndResolveSources(
   };
 }
 
+const GEMINI_LOOKUP_CONFIG = {
+  systemInstruction: GEMINI_GROCERY_SYSTEM_INSTRUCTION,
+  temperature: 0.2,
+  maxOutputTokens: 8192,
+  thinkingConfig: { thinkingBudget: 1024 },
+  tools: [{ googleSearch: {} }],
+};
+
+const MAX_GEMINI_ATTEMPTS = 3;
+
+async function generatePriceLookupResponse(
+  prompt: string,
+): Promise<{
+  text: string;
+  response: Awaited<
+    ReturnType<ReturnType<typeof getGeminiClient>["models"]["generateContent"]>
+  >;
+}> {
+  const ai = getGeminiClient();
+
+  for (let attempt = 1; attempt <= MAX_GEMINI_ATTEMPTS; attempt++) {
+    const response = await ai.models.generateContent({
+      model: GEMINI_MODEL,
+      contents:
+        attempt === 1
+          ? prompt
+          : `${prompt}\n\nRetry ${attempt}: you must return valid JSON with store prices. Do not return an empty response.`,
+      config: GEMINI_LOOKUP_CONFIG,
+    });
+
+    const text = extractResponseText(response);
+    if (text) {
+      return { text, response };
+    }
+
+    console.warn(
+      `Gemini returned empty response on attempt ${attempt}/${MAX_GEMINI_ATTEMPTS}`,
+    );
+
+    if (attempt < MAX_GEMINI_ATTEMPTS) {
+      await sleep(600 * attempt);
+    }
+  }
+
+  throw new Error("Gemini returned an empty response.");
+}
+
 export async function lookupGroceryPrices(
   input: GroceryPriceLookupInput,
 ): Promise<GroceryPriceLookupResult> {
@@ -163,22 +227,8 @@ export async function lookupGroceryPrices(
     throw new Error("At least one product is required.");
   }
 
-  const ai = getGeminiClient();
-
-  const response = await ai.models.generateContent({
-    model: GEMINI_MODEL,
-    contents: buildGroceryPriceLookupPrompt(input),
-    config: {
-      systemInstruction: GEMINI_GROCERY_SYSTEM_INSTRUCTION,
-      temperature: 0.2,
-      tools: [{ googleSearch: {} }],
-    },
-  });
-
-  const text = response.text?.trim();
-  if (!text) {
-    throw new Error("Gemini returned an empty response.");
-  }
+  const prompt = buildGroceryPriceLookupPrompt(input);
+  const { text, response } = await generatePriceLookupResponse(prompt);
 
   const parsed = lookupResultSchema.parse(
     JSON.parse(extractJson(text)) as unknown,

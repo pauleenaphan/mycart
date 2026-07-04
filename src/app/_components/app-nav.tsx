@@ -20,7 +20,7 @@ function NavItem({ label, active, onClick, children }: NavItemProps) {
       type="button"
       onClick={onClick}
       aria-current={active ? "page" : undefined}
-      className={`flex flex-1 flex-col items-center gap-1 rounded-2xl py-2 transition ${
+      className={`flex min-h-14 flex-1 flex-col items-center justify-center gap-1 rounded-2xl py-2 transition ${
         active
           ? "bg-brand-50 text-brand-700"
           : "text-stone-400 hover:text-stone-600"
@@ -64,8 +64,12 @@ function StoreIcon({ active }: { active: boolean }) {
       strokeWidth={active ? 2.25 : 1.75}
       aria-hidden
     >
-      <path d="M3 9.5 12 3l9 6.5V20a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9.5Z" />
-      <path d="M9 21V12h6v9" strokeLinecap="round" strokeLinejoin="round" />
+      <path
+        d="M12 21s7-5.5 7-12a7 7 0 1 0-14 0c0 6.5 7 12 7 12z"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <circle cx="12" cy="9" r="2.5" />
     </svg>
   );
 }
@@ -96,7 +100,7 @@ export function AppNav({ activeTab, onChange }: AppNavProps) {
   return (
     <nav
       aria-label="Main"
-      className="fixed inset-x-0 bottom-0 z-30 px-4 pb-4 pt-2"
+      className="fixed inset-x-0 bottom-0 z-30 px-4 pt-2 pb-[max(1rem,var(--spacing-safe-bottom))]"
     >
       <div className="mx-auto flex w-full max-w-lg gap-1 rounded-2xl border border-stone-200/80 bg-white/95 p-1.5 shadow-lg shadow-stone-900/5 backdrop-blur-md">
         <NavItem

@@ -27,7 +27,6 @@ export function getOfficialCatalogSearchUrls(
   if (!root) return [];
 
   const host = getHostname(officialWebsite) ?? "";
-
   const urls = new Set<string>();
 
   if (host.includes("costco.com")) {
@@ -37,7 +36,9 @@ export function getOfficialCatalogSearchUrls(
   }
 
   if (host.includes("hmart.com")) {
-    urls.add(`https://www.hmart.com/search?query=${encoded}`);
+    // H Mart uses client-side hash routing — /search?query= returns 404
+    urls.add(`https://www.hmart.com/#/search/${encoded}`);
+    return [...urls];
   }
 
   if (host.includes("centralmarket.com")) {
@@ -67,24 +68,73 @@ export function getSuggestedSearchQueries(
 
   const product = productName.trim();
   const queries = [
+    `site:${domain} "${product}"`,
     `site:${domain} ${product}`,
     `site:${domain} ${product} price`,
-    `site:${domain} "${product}"`,
+    `site:${domain} "${product}" "$"`,
     `${product} ${storeName} site:${domain}`,
   ];
 
   if (domain.includes("costco.com")) {
-    queries.unshift(`site:costco.com ${product} gallon`);
     queries.unshift(`site:costco.com CatalogSearch ${product}`);
   }
 
   if (domain.includes("hmart.com")) {
-    queries.unshift(`site:hmart.com ${product}`);
+    queries.unshift(`site:hmart.com "${product}"`);
   }
 
   if (domain.includes("centralmarket.com")) {
-    queries.unshift(`site:centralmarket.com ${product}`);
+    queries.unshift(`site:centralmarket.com "${product}"`);
   }
 
   return [...new Set(queries)];
+}
+
+/** H Mart hash search — the only reliable catalog URL format on hmart.com. */
+export function getHmartSearchUrl(productName: string): string {
+  return `https://www.hmart.com/#/search/${encodeURIComponent(productName.trim())}`;
+}
+
+/**
+ * Fix broken H Mart URLs (e.g. /search?query= 404) and ensure hash routes are kept.
+ */
+export function normalizeStoreSourceUrl(
+  url: string | null | undefined,
+  officialWebsite: string,
+  productName: string,
+): string | null {
+  if (!url) return null;
+
+  const host = getHostname(url) ?? getHostname(officialWebsite) ?? "";
+  if (!host.includes("hmart.com")) {
+    return url;
+  }
+
+  try {
+    const parsed = new URL(url);
+
+    if (parsed.hash.includes("#/search")) {
+      return url;
+    }
+
+    if (parsed.pathname === "/search") {
+      const query =
+        parsed.searchParams.get("query") ??
+        parsed.searchParams.get("q") ??
+        productName.trim();
+      return getHmartSearchUrl(query);
+    }
+
+    if (parsed.pathname.endsWith("/p") || parsed.pathname.includes("--")) {
+      return url;
+    }
+
+    if (!parsed.hash && parsed.pathname === "/") {
+      return getHmartSearchUrl(productName);
+    }
+
+    return url;
+  } catch {
+    return getHmartSearchUrl(productName);
+  }
 }

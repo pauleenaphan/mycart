@@ -1,11 +1,27 @@
 import "~/styles/globals.css";
 
-import { type Metadata } from "next";
+import { type Metadata, type Viewport } from "next";
 
 import { TRPCReactProvider } from "~/trpc/react";
 
 export const metadata: Metadata = {
-  title: "Grocery List",
+  title: "MyCart",
+  description: "Your smart grocery shopping list",
+  icons: {
+    icon: [
+      { url: "/favicon.png", sizes: "512x512", type: "image/png" },
+      { url: "/favicon.png", sizes: "32x32", type: "image/png" },
+    ],
+    apple: [
+      { url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" },
+    ],
+  },
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
 };
 
 export default function RootLayout({

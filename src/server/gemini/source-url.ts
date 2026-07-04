@@ -1,8 +1,39 @@
 import { isOfficialStoreUrl } from "~/server/gemini/official-website";
-import { getOfficialCatalogSearchUrls } from "~/server/gemini/store-search";
+import {
+  getOfficialCatalogSearchUrls,
+  normalizeStoreSourceUrl,
+} from "~/server/gemini/store-search";
 
 const BROWSER_USER_AGENT =
   "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36";
+
+/** fetch() drops URL hashes — restore them for client-routed store sites. */
+function preserveUrlHash(originalUrl: string, resolvedUrl: string): string {
+  try {
+    const original = new URL(originalUrl);
+    if (!original.hash) {
+      return resolvedUrl;
+    }
+
+    const resolved = new URL(resolvedUrl);
+    if (resolved.hash) {
+      return resolvedUrl;
+    }
+
+    resolved.hash = original.hash;
+    return resolved.toString();
+  } catch {
+    return resolvedUrl;
+  }
+}
+
+function urlForRelevanceCheck(candidate: string, verifiedFinalUrl: string): string {
+  if (candidate.includes("#/search")) {
+    return candidate;
+  }
+
+  return verifiedFinalUrl;
+}
 
 type WebSource = {
   uri: string;
@@ -64,18 +95,24 @@ function scoreProductUrl(url: string, productName: string): number {
   if (
     normalizedUrl.includes("/product/") ||
     normalizedUrl.includes("catalogsearch") ||
-    normalizedUrl.includes("/catalog")
+    normalizedUrl.includes("/catalog") ||
+    normalizedUrl.endsWith("/p") ||
+    normalizedUrl.includes("/p?")
   ) {
     score += 4;
   }
 
-  if (normalizedUrl.includes("/search") || normalizedUrl.includes("keyword=")) {
+  if (
+    normalizedUrl.includes("/search") ||
+    normalizedUrl.includes("keyword=") ||
+    normalizedUrl.includes("#/search")
+  ) {
     score += 2;
   }
 
   try {
     const parsed = new URL(url);
-    const searchText = parsed.search.toLowerCase();
+    const searchText = (parsed.search + parsed.hash).toLowerCase();
     for (const token of tokens) {
       if (searchText.includes(token)) {
         score += 4;
@@ -130,7 +167,7 @@ export async function resolveRedirectUrl(url: string): Promise<string> {
     });
 
     clearTimeout(timeout);
-    return response.url;
+    return preserveUrlHash(url, response.url);
   } catch {
     return url;
   }
@@ -158,7 +195,7 @@ export async function verifyUrlExists(url: string): Promise<{
 
     return {
       ok: response.status >= 200 && response.status < 400,
-      finalUrl: response.url,
+      finalUrl: preserveUrlHash(url, response.url),
     };
   } catch {
     return { ok: false, finalUrl: url };
@@ -180,7 +217,13 @@ export async function resolveVerifiedProductSourceUrl(options: {
   const candidateUrls = new Set<string>();
 
   if (options.modelUrl) {
-    candidateUrls.add(options.modelUrl);
+    candidateUrls.add(
+      normalizeStoreSourceUrl(
+        options.modelUrl,
+        options.officialWebsite,
+        options.productName,
+      ) ?? options.modelUrl,
+    );
   }
 
   const resolvedGrounding = await Promise.all(
@@ -202,7 +245,13 @@ export async function resolveVerifiedProductSourceUrl(options: {
   );
 
   for (const catalogUrl of catalogSearchUrls) {
-    candidateUrls.add(catalogUrl);
+    candidateUrls.add(
+      normalizeStoreSourceUrl(
+        catalogUrl,
+        options.officialWebsite,
+        options.productName,
+      ) ?? catalogUrl,
+    );
   }
 
   candidateUrls.add(options.officialWebsite);
@@ -219,24 +268,34 @@ export async function resolveVerifiedProductSourceUrl(options: {
   let rejectedModelUrl = false;
 
   for (const candidate of officialCandidates) {
-    const verified = await verifyUrlExists(candidate);
-    const isOfficial = isOfficialStoreUrl(
+    const normalizedCandidate =
+      normalizeStoreSourceUrl(
+        candidate,
+        options.officialWebsite,
+        options.productName,
+      ) ?? candidate;
+
+    const verified = await verifyUrlExists(normalizedCandidate);
+    const displayUrl = preserveUrlHash(
+      normalizedCandidate,
       verified.finalUrl,
+    );
+    const isOfficial = isOfficialStoreUrl(
+      displayUrl,
       options.officialWebsite,
     );
     const relevant = isRelevantProductPage(
-      verified.ok ? verified.finalUrl : candidate,
+      urlForRelevanceCheck(normalizedCandidate, displayUrl),
       options.productName,
       options.officialWebsite,
     );
 
     if (verified.ok && isOfficial) {
-      const isProductPage =
-        isRelevantProductPage(
-          verified.finalUrl,
-          options.productName,
-          options.officialWebsite,
-        );
+      const isProductPage = isRelevantProductPage(
+        urlForRelevanceCheck(normalizedCandidate, displayUrl),
+        options.productName,
+        options.officialWebsite,
+      );
 
       if (
         options.modelUrl &&
@@ -253,13 +312,15 @@ export async function resolveVerifiedProductSourceUrl(options: {
       );
 
       if (isProductPage) {
+        const checkUrl = displayUrl.toLowerCase();
         const isCatalogSearch =
-          verified.finalUrl.toLowerCase().includes("catalogsearch") ||
-          verified.finalUrl.toLowerCase().includes("/search") ||
-          verified.finalUrl.toLowerCase().includes("keyword=");
+          checkUrl.includes("catalogsearch") ||
+          checkUrl.includes("/search") ||
+          checkUrl.includes("#/search") ||
+          checkUrl.includes("keyword=");
 
         return {
-          sourceUrl: verified.finalUrl,
+          sourceUrl: displayUrl,
           sourceTitle:
             options.modelTitle ??
             matchedGrounding?.title ??
@@ -267,13 +328,13 @@ export async function resolveVerifiedProductSourceUrl(options: {
               ? "Official catalog search"
               : "Official product page"),
           notesAppend: null,
-          verifiedProductPage: !isCatalogSearch,
+          verifiedProductPage: true,
         };
       }
 
-      if (candidate === options.officialWebsite) {
+      if (normalizedCandidate === options.officialWebsite) {
         return {
-          sourceUrl: verified.finalUrl,
+          sourceUrl: displayUrl,
           sourceTitle: "Store website",
           notesAppend: rejectedModelUrl
             ? "Could not verify a direct product page link. Showing the store's official website instead."
@@ -285,16 +346,18 @@ export async function resolveVerifiedProductSourceUrl(options: {
 
     if (
       !verified.ok &&
-      isOfficialStoreUrl(candidate, options.officialWebsite) &&
+      isOfficialStoreUrl(normalizedCandidate, options.officialWebsite) &&
       relevant
     ) {
+      const checkUrl = normalizedCandidate.toLowerCase();
       const isCatalogSearch =
-        candidate.toLowerCase().includes("catalogsearch") ||
-        candidate.toLowerCase().includes("/search") ||
-        candidate.toLowerCase().includes("keyword=");
+        checkUrl.includes("catalogsearch") ||
+        checkUrl.includes("/search") ||
+        checkUrl.includes("#/search") ||
+        checkUrl.includes("keyword=");
 
       return {
-        sourceUrl: candidate,
+        sourceUrl: normalizedCandidate,
         sourceTitle: isCatalogSearch
           ? "Official catalog search"
           : "Official product page",

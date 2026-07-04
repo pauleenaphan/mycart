@@ -19,6 +19,7 @@ export type ShoppingListItem = {
   id: string;
   checked: boolean;
   product: Product;
+  store: Pick<Store, "id" | "name"> | null;
 };
 
 export type FavoriteGroceryItem = {
@@ -32,6 +33,8 @@ export type UserProfile = {
   email: string | null;
   image: string | null;
   clearOnCheck: boolean;
+  useGeminiPrices: boolean;
+  collapseCompletedStores: boolean;
   themeColor: ThemeColor;
   stores: Store[];
   shoppingList: ShoppingListItem[];

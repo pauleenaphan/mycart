@@ -5,10 +5,15 @@ import {
   createTRPCRouter,
   protectedProcedure,
 } from "~/server/api/trpc";
+import { getPriceLookupError } from "~/server/gemini/errors";
 import { lookupGroceryPrices } from "~/server/gemini/lookup-grocery-prices";
 import { findProductByExactName, searchProductsByName } from "~/server/products/find-product-by-name";
+import {
+  assertUserStore,
+  ensureShoppingListItem,
+} from "~/server/shopping-list/ensure-item";
 import { type db } from "~/server/db";
-import { type GroceryPriceLookupResult } from "~/types/grocery";
+import { type GroceryPriceLookupResult, type PriceLookupError } from "~/types/grocery";
 import { isThemeColor, THEME_COLORS } from "~/types/theme";
 import { type UserProfile } from "~/types/user";
 
@@ -30,8 +35,11 @@ async function getUserProfile(
     include: {
       stores: { orderBy: { name: "asc" } },
       shoppingListItems: {
-        orderBy: { createdAt: "asc" },
-        include: { product: true },
+        orderBy: [{ checked: "asc" }, { createdAt: "asc" }],
+        include: {
+          product: true,
+          store: { select: { id: true, name: true } },
+        },
       },
       favoriteItems: { orderBy: { createdAt: "asc" } },
     },
@@ -47,6 +55,8 @@ async function getUserProfile(
     email: user.email,
     image: user.image,
     clearOnCheck: user.clearOnCheck,
+    useGeminiPrices: user.useGeminiPrices,
+    collapseCompletedStores: user.collapseCompletedStores,
     themeColor: isThemeColor(user.themeColor) ? user.themeColor : "pink",
     stores: user.stores,
     shoppingList: user.shoppingListItems,
@@ -65,6 +75,28 @@ export const userRouter = createTRPCRouter({
       await ctx.db.user.update({
         where: { id: ctx.session.user.id },
         data: { clearOnCheck: input.clearOnCheck },
+      });
+
+      return getUserProfile(ctx.db, ctx.session.user.id);
+    }),
+
+  setUseGeminiPrices: protectedProcedure
+    .input(z.object({ useGeminiPrices: z.boolean() }))
+    .mutation(async ({ ctx, input }) => {
+      await ctx.db.user.update({
+        where: { id: ctx.session.user.id },
+        data: { useGeminiPrices: input.useGeminiPrices },
+      });
+
+      return getUserProfile(ctx.db, ctx.session.user.id);
+    }),
+
+  setCollapseCompletedStores: protectedProcedure
+    .input(z.object({ collapseCompletedStores: z.boolean() }))
+    .mutation(async ({ ctx, input }) => {
+      await ctx.db.user.update({
+        where: { id: ctx.session.user.id },
+        data: { collapseCompletedStores: input.collapseCompletedStores },
       });
 
       return getUserProfile(ctx.db, ctx.session.user.id);
@@ -116,22 +148,44 @@ export const userRouter = createTRPCRouter({
     }),
 
   addShoppingItem: protectedProcedure
-    .input(z.object({ name: z.string().min(1) }))
+    .input(
+      z.object({
+        name: z.string().min(1),
+        storeId: z.string().nullable().optional(),
+      }),
+    )
     .mutation(async ({ ctx, input }) => {
       const name = input.name.trim();
+
+      const userSettings = await ctx.db.user.findUnique({
+        where: { id: ctx.session.user.id },
+        select: { useGeminiPrices: true },
+      });
+
+      let storeId: string | null = null;
+      if (!userSettings?.useGeminiPrices && input.storeId) {
+        try {
+          await assertUserStore(ctx.db, ctx.session.user.id, input.storeId);
+          storeId = input.storeId;
+        } catch {
+          throw new TRPCError({ code: "NOT_FOUND", message: "Store not found" });
+        }
+      }
+
       const existing = await findProductByExactName(ctx.db, name);
 
       if (existing) {
-        await ctx.db.shoppingListItem.create({
-          data: {
-            userId: ctx.session.user.id,
-            productId: existing.id,
-          },
-        });
+        await ensureShoppingListItem(
+          ctx.db,
+          ctx.session.user.id,
+          existing.id,
+          userSettings?.useGeminiPrices ? null : storeId,
+        );
 
         return {
           profile: await getUserProfile(ctx.db, ctx.session.user.id),
           priceLookup: null as GroceryPriceLookupResult | null,
+          priceLookupError: null as PriceLookupError | null,
         };
       }
 
@@ -145,8 +199,9 @@ export const userRouter = createTRPCRouter({
       });
 
       let priceLookup: GroceryPriceLookupResult | null = null;
+      let priceLookupError: PriceLookupError | null = null;
 
-      if (user && user.stores.length > 0) {
+      if (user?.useGeminiPrices && user.stores.length > 0) {
         try {
           priceLookup = await lookupGroceryPrices({
             stores: user.stores.map((store) => ({
@@ -162,19 +217,21 @@ export const userRouter = createTRPCRouter({
           });
         } catch (error) {
           console.error("Gemini price lookup failed:", error);
+          priceLookupError = getPriceLookupError(error);
         }
+      } else if (!user?.useGeminiPrices) {
+        await ensureShoppingListItem(
+          ctx.db,
+          ctx.session.user.id,
+          product.id,
+          storeId,
+        );
       }
-
-      await ctx.db.shoppingListItem.create({
-        data: {
-          userId: ctx.session.user.id,
-          productId: product.id,
-        },
-      });
 
       return {
         profile: await getUserProfile(ctx.db, ctx.session.user.id),
         priceLookup,
+        priceLookupError,
       };
     }),
 
@@ -184,14 +241,13 @@ export const userRouter = createTRPCRouter({
       return searchProductsByName(ctx.db, input.query);
     }),
 
-  findProductByName: protectedProcedure
-    .input(z.object({ name: z.string().min(1) }))
-    .query(async ({ ctx, input }) => {
-      return findProductByExactName(ctx.db, input.name);
-    }),
-
   addProductToList: protectedProcedure
-    .input(z.object({ productId: z.string() }))
+    .input(
+      z.object({
+        productId: z.string(),
+        storeId: z.string().nullable().optional(),
+      }),
+    )
     .mutation(async ({ ctx, input }) => {
       const product = await ctx.db.product.findUnique({
         where: { id: input.productId },
@@ -201,12 +257,49 @@ export const userRouter = createTRPCRouter({
         throw new TRPCError({ code: "NOT_FOUND", message: "Product not found" });
       }
 
-      await ctx.db.shoppingListItem.create({
-        data: {
-          userId: ctx.session.user.id,
-          productId: product.id,
-        },
+      const storeId = input.storeId ?? null;
+
+      if (storeId) {
+        try {
+          await assertUserStore(ctx.db, ctx.session.user.id, storeId);
+        } catch {
+          throw new TRPCError({ code: "NOT_FOUND", message: "Store not found" });
+        }
+      }
+
+      await ensureShoppingListItem(
+        ctx.db,
+        ctx.session.user.id,
+        product.id,
+        storeId,
+      );
+
+      return getUserProfile(ctx.db, ctx.session.user.id);
+    }),
+
+  toggleFavoriteItem: protectedProcedure
+    .input(z.object({ text: z.string().min(1) }))
+    .mutation(async ({ ctx, input }) => {
+      const text = input.text.trim();
+      const favorites = await ctx.db.favoriteGroceryItem.findMany({
+        where: { userId: ctx.session.user.id },
       });
+      const existing = favorites.find(
+        (favorite) => favorite.text.toLowerCase() === text.toLowerCase(),
+      );
+
+      if (existing) {
+        await ctx.db.favoriteGroceryItem.delete({
+          where: { id: existing.id },
+        });
+      } else {
+        await ctx.db.favoriteGroceryItem.create({
+          data: {
+            userId: ctx.session.user.id,
+            text,
+          },
+        });
+      }
 
       return getUserProfile(ctx.db, ctx.session.user.id);
     }),
@@ -259,6 +352,19 @@ export const userRouter = createTRPCRouter({
     return getUserProfile(ctx.db, ctx.session.user.id);
   }),
 
+  clearShoppingListByStore: protectedProcedure
+    .input(z.object({ storeId: z.string().nullable() }))
+    .mutation(async ({ ctx, input }) => {
+      await ctx.db.shoppingListItem.deleteMany({
+        where: {
+          userId: ctx.session.user.id,
+          storeId: input.storeId,
+        },
+      });
+
+      return getUserProfile(ctx.db, ctx.session.user.id);
+    }),
+
   addFavoriteItem: protectedProcedure
     .input(z.object({ text: z.string().min(1) }))
     .mutation(async ({ ctx, input }) => {
@@ -302,16 +408,16 @@ export const userRouter = createTRPCRouter({
         throw new TRPCError({ code: "NOT_FOUND" });
       }
 
-      await ctx.db.shoppingListItem.create({
-        data: {
-          userId: ctx.session.user.id,
-          productId: (
-            await ctx.db.product.create({
-              data: { name: favorite.text },
-            })
-          ).id,
-        },
-      });
+      await ensureShoppingListItem(
+        ctx.db,
+        ctx.session.user.id,
+        (
+          await ctx.db.product.create({
+            data: { name: favorite.text },
+          })
+        ).id,
+        null,
+      );
 
       return getUserProfile(ctx.db, ctx.session.user.id);
     }),
